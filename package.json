@@ -1,0 +1,51 @@
+{
+  "name": "site_updater",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.15.0",
+    "npm": "6.5.0"
+  },
+  "description": "Clinton AMEZ Church Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build-css": "less-watch-compiler --run-once --main-file=app.less src/css/ public/css/",
+    "watch-css": "npm run build-css && less-watch-compiler --main-file=app.less src/css/ public/css/",
+    "build": "npm run build-css && react-scripts build",
+    "heroku-postbuild": "npm run build-css && npm run build",
+    "script-run": "react-scripts start",
+    "script-dev": "concurrently \"npm run watch-css\" \"npm run script-run\" \"wait-on http://localhost:3001\""
+  },
+  "author": "Kris Redding",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "flickrapi": "^0.6.0",
+    "globalize": "^1.4.0",
+    "moment": "^2.24.0",
+    "mongodb": "^3.1.13",
+    "react": "^16.8.1",
+    "react-alice-carousel": "^1.13.1",
+    "react-dom": "^16.8.1",
+    "react-image-gallery": "^0.8.13",
+    "react-responsive-carousel": "^3.1.46",
+    "react-router-dom": "^4.3.1",
+    "react-router-transition": "^1.2.1",
+    "react-scripts": "^2.1.5",
+    "react-sidebar": "^3.0.2",
+    "react-transition-group": "^1.2.1",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "less-watch-compiler": "^1.13.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

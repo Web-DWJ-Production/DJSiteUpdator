@@ -10,22 +10,29 @@
             min-height: 500px;
             position: relative;
 
-            .removeCard {
+            .ctrlCards {
                 position: absolute;
+                display: inline-flex;
                 top:0px;
                 right:0px;
-                display: inline-flex;
                 flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                color: rgba(255,255,255,1);
-                border-radius: 50%;
-                padding: 7px;
-                background: rgba(200,0,0,1);
-                opacity: 0.4;
-                cursor: pointer;
-                transition: 0.5s all ease-in-out;
-                &:hover { opacity: 1;}    
+                .ctrlCard {
+                    display: inline-flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    text-align: center;
+                    color: rgba(255,255,255,1);
+                    border-radius: 50%;
+                    padding: 7px;
+                    opacity: 0.4;
+                    cursor: pointer;
+                    transition: 0.5s all ease-in-out;
+                    &+.ctrlCard { margin-top: 20px; }
+                    &:hover { opacity: 1;}  
+
+                    &.removeCard { background: rgba(200,0,0,1);}
+                    &.saveCard { background: rgba(0,200,0,1);}
+                }
             }
         }
 
@@ -90,8 +97,7 @@
     text-align: inherit;
     width:100%;
     overflow: hidden;
-    resize: none;
-    //margin-bottom: -30px;
+    &.noSz{ resize: none; }
   
     &:focus, &.empty { border: 2px dashed rgba(250,250,250,0.3); }
 }
@@ -118,16 +124,21 @@
     color: rgba(255,255,255,1);
     margin-top: -10px;
     display: flex;
-    justify-content: space-evenly;
-    .edit-item {
+    justify-content: space-evenly;    
+    .edit-item { 
         border-radius: 50%;
         opacity: 0.2;
-        transition: 0.5s all ease-in-out;
+        padding: 2px 5px;
+        //transition: 0.5s all ease;
         cursor: pointer;
-
-        &.remove { padding: 2px 5px; background: rgba(200,0,0,0.7); }
+    
+        &.remove { background: rgba(200,0,0,0.7); }
+        &.textType { background: rgba(109, 100, 82,0.7); }
+        &.bold { background: rgba(109, 100, 82,0.7); }
         &:hover { opacity: 1; }
+        &+.edit-item{ margin-left: 10px;}
     }
+    
 }
 
 /* Card Styles */

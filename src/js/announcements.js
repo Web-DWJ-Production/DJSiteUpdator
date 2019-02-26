@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import socketIOClient from 'socket.io-client';
 
 /* Image */
 import tmpImg from "../assets/imgs/tmp/Pastor2.jpg";
@@ -6,12 +7,15 @@ import defaultImg from "../assets/imgs/amez_logo.png";
 
 /* Cards */
 import ImgCard from "./components/imgCard";
+const textSizes = ["paragraph","h1","h2"];
+const baseUrl = "";
 
 class Announcements extends Component{
     constructor(props) {
         super(props);
 
         this.state = {
+            localSock:null,
             maxList:7,
             selectedId:0,
             selectedItem:{},
@@ -30,9 +34,13 @@ class Announcements extends Component{
         this.changeSelected = this.changeSelected.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.handleTextStyleChange = this.handleTextStyleChange.bind(this);
         this.addLine = this.addLine.bind(this);
+        this.deleteLine = this.deleteLine.bind(this);
+
         this.addAnnouncement = this.addAnnouncement.bind(this);
         this.removeAnnouncement = this.removeAnnouncement.bind(this);
+        this.saveAnnouncements = this.saveAnnouncements.bind(this);
     }
 
     render(){  
@@ -41,9 +49,12 @@ class Announcements extends Component{
                 <h1>Announcements Editor</h1>
                 <div className="announcement-container">
                     <div className="selected-announcement">
-                        <div className="removeCard" onClick={this.removeAnnouncement}><i className="fas fa-folder-minus"></i></div>
+                        <span className="ctrlCards">
+                            <div className="ctrlCard saveCard" onClick={this.saveAnnouncements}><i className="fas fa-save"></i></div>
+                            <div className="ctrlCard removeCard" onClick={this.removeAnnouncement}><i className="fas fa-folder-minus"></i></div>                            
+                        </span>
                         {this.state.announcementList.map((announcement,i) =>                                                   
-                            <ImgCard key={i} isSelected={(i === this.state.selectedId)} item={announcement} handleInputChange={this.handleInputChange} handleTextChange={this.handleTextChange} addLine={this.addLine}></ImgCard>               
+                            <ImgCard key={i} isSelected={(i === this.state.selectedId)} item={announcement} handleInputChange={this.handleInputChange} handleTextChange={this.handleTextChange} handleTextStyleChange={this.handleTextStyleChange} addLine={this.addLine} deleteLine={this.deleteLine}></ImgCard>               
                         )}
                     </div>
 
@@ -69,11 +80,25 @@ class Announcements extends Component{
         this.setState({selectedId:id}, () => { self.forceUpdate()});
     }
     
+    saveAnnouncements(){
+        var self = this;
+        try {
+            var tmpList = self.state.announcementList;
+
+            tmpList.forEach(function(element,index){ element.order = index+1;  });
+            /* UPDATE LIST VIA SOCKET */
+            self.localSock.emit('update announcements', tmpList);
+        }
+        catch(ex){
+            console.log(" Error saving announcements: ", ex);
+        }
+    }
     removeAnnouncement(){
         var self = this;
         try {
             /* TODO: Add Warning Message */
             if(this.state.announcementList.length > 0) {
+                /* TODO GET ID & REMOVE ELEMENT FROM DB */
                 var tmpList = self.state.announcementList;
                 tmpList.splice(self.state.selectedId,1);
                 self.setState({ announcementList:tmpList });
@@ -89,7 +114,7 @@ class Announcements extends Component{
         try {
             if(this.state.announcementList.length < this.state.maxList) {
                 var tmpList = this.state.announcementList;
-                tmpList.push({type:"carousel-card-img", title:"New Title", media:defaultImg, lines:[]});
+                tmpList.unshift({type:"carousel-card-img", title:"New Title", media:defaultImg, lines:[]});
                 self.setState({ announcementList:tmpList });
             }
         }
@@ -98,6 +123,17 @@ class Announcements extends Component{
         }
     }
 
+    deleteLine(loc){
+        var self = this;
+        try {
+            var tmpList = this.state.announcementList;
+            tmpList[self.state.selectedId].lines.splice(loc,1);
+            self.setState({ announcementList: tmpList });
+        }
+        catch(ex){
+            console.log(" Error adding line: ", ex);
+        }
+    }
     addLine(){
         var self = this;
         try {
@@ -128,6 +164,26 @@ class Announcements extends Component{
         }
     }
 
+    handleTextStyleChange(type, loc){
+        var self = this;
+        try {
+            var tmpList = self.state.announcementList;
+            if(type === "size"){
+                var szLoc = textSizes.indexOf(tmpList[self.state.selectedId].lines[loc].size);
+                szLoc = (szLoc +1 >= textSizes.length ? 0 : szLoc+1);
+
+                tmpList[self.state.selectedId].lines[loc].size = textSizes[szLoc];
+            }
+            else if(type === "bold"){
+                tmpList[self.state.selectedId].lines[loc].bold = !tmpList[self.state.selectedId].lines[loc].bold
+            }
+
+            self.setState({ announcementList: tmpList });
+        }
+        catch(ex){
+            console.log("Error updating text style: ", ex);
+        }
+    }
     handleTextChange(event,type,loc){
         var self = this;
         try {
@@ -146,8 +202,25 @@ class Announcements extends Component{
         }
     }
 
+    initSocket(user){
+        var self = this;
+        try {
+            var socketQuery = "userid="+ user.userId +"&token="+user.token;
+            this.setState({ localSock: socketIOClient(baseUrl, {query: socketQuery}) }, () => {
+                self.localSock.on('update announcements',function(res) {
+                    console.log(res);
+                });
+            });
+        }
+        catch(ex){
+            console.log("Error init socket: ",ex);
+        }
+    }
+
     componentDidMount(){
         this.props.setList();
+        initSocket({userId:"test",token:"123abc"});
+
         this.setState({selectedId:0});
     }
 }

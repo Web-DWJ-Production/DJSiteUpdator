@@ -30,12 +30,17 @@ class ImgCard extends Component{
 
                     <div className="card-content">
                         { /* Edit Tool */}
-                        <textarea className="content-title h-form" ref="titleRef" value={this.props.item.title} onChange={(e) => this.props.handleTextChange(e,"title",0)}></textarea>
+                        <textarea className="content-title h-form noSz" ref="titleRef" value={this.props.item.title} onChange={(e) => this.props.handleTextChange(e,"title",0)}></textarea>
                         {this.props.item.lines.map((line,i) =>
                             <span>
                                 <textarea key={i} className={"content-line h-form "+ line.size + (line.bold === true ? ' bold': '')} value={line.text} ref={"lineRef"+i} onChange={(e) => this.props.handleTextChange(e,"line",i)}></textarea>
-                                <div className="editLine">
-                                    <div className="edit-item remove"><i class="fas fa-trash-alt"></i></div>
+                                <div className="editLine">                                    
+                                        <div className="edit-item textType" onClick={() => this.props.handleTextStyleChange("size",i)}><span>{this.sizeTxt(line.size)}</span></div>
+                                        <div className="edit-item bold" onClick={() => this.props.handleTextStyleChange("bold",i)}>
+                                            {(line.bold === true ? <i className="fas fa-bold"></i> : <i className="fas fa-ban"></i> )}                                        
+                                        </div>                                   
+
+                                        <div className="edit-item remove" onClick={() => this.props.deleteLine(i)}><i className="fas fa-trash-alt"></i></div>
                                 </div>                                
                             </span>
                         )}
@@ -97,7 +102,7 @@ class ImgCard extends Component{
     }
 
     textAreaAdjust(obj){
-        try {
+        try {           
             obj.style.height = "1px";
             var objHeight = (obj.offsetTop < obj.scrollHeight ? obj.offsetTop : obj.scrollHeight)+5+"px";
             

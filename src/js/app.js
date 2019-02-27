@@ -7,11 +7,12 @@ import DWJSideNav from './sideNav';
 import Home from './home';
 import UC from './UC';
 import Announcements from './announcements';
+import Users from './users';
 import NoMatch from './noMatch';
 
 const routes = [
     { title:"Announcements", path:"/announcements", component:Announcements},
-    { title:"Users", privilage:true, path:"/users", component:UC},
+    { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:UC}
 ];
 

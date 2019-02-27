@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import socketIOClient from 'socket.io-client';
+//import socketIOClient from 'socket.io-client';
 
 /* Image */
 import tmpImg from "../assets/imgs/tmp/Pastor2.jpg";
@@ -96,12 +96,16 @@ class Announcements extends Component{
     removeAnnouncement(){
         var self = this;
         try {
-            /* TODO: Add Warning Message */
-            if(this.state.announcementList.length > 0) {
-                /* TODO GET ID & REMOVE ELEMENT FROM DB */
-                var tmpList = self.state.announcementList;
-                tmpList.splice(self.state.selectedId,1);
-                self.setState({ announcementList:tmpList });
+            var tmpList = self.state.announcementList;
+
+            if(tmpList.length > 0) {                
+                var status = window.confirm("You are about to remove '"+tmpList[self.state.selectedId].title+"' is this OK?");
+                
+                if(status === true){
+                    /* TODO GET ID & REMOVE ELEMENT FROM DB */
+                    tmpList.splice(self.state.selectedId,1);
+                    self.setState({ announcementList:tmpList });
+                }
             }
         }
         catch(ex){
@@ -206,11 +210,11 @@ class Announcements extends Component{
         var self = this;
         try {
             var socketQuery = "userid="+ user.userId +"&token="+user.token;
-            this.setState({ localSock: socketIOClient(baseUrl, {query: socketQuery}) }, () => {
+            /*this.setState({ localSock: socketIOClient(baseUrl, {query: socketQuery}) }, () => {
                 self.localSock.on('update announcements',function(res) {
                     console.log(res);
                 });
-            });
+            });*/
         }
         catch(ex){
             console.log("Error init socket: ",ex);
@@ -219,7 +223,7 @@ class Announcements extends Component{
 
     componentDidMount(){
         this.props.setList();
-        initSocket({userId:"test",token:"123abc"});
+        //this.initSocket({userId:"test",token:"123abc"});
 
         this.setState({selectedId:0});
     }

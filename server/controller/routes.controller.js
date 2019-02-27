@@ -10,4 +10,4 @@ function deleteAnnouncements(req, res){ data.deleteAnnouncements(req, res); }
 
 /* Routes */
 router.get('/getAnnouncements', getAnnouncements);
-router.post('/deleteAnnouncements', getAnnouncements);
+router.post('/deleteAnnouncements', deleteAnnouncements);

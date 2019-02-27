@@ -290,6 +290,132 @@
 .carousel-card .card-content .content-line + .content-line {
   margin-top: 15px;
 }
+.users {
+  text-align: center;
+}
+.users .management-container {
+  padding: 2%;
+  position: relative;
+  overflow-y: auto;
+}
+.users .management-container .user-line {
+  padding: 10px 7px;
+  display: flex;
+}
+.users .management-container .user-line .input-container {
+  display: inline-flex;
+  flex-direction: column;
+  text-align: left;
+  min-width: 25%;
+  border-radius: 5px;
+  border: 2px solid #000000;
+}
+.users .management-container .user-line .input-container span {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding-bottom: 2px;
+  padding-left: 3px;
+}
+.users .management-container .user-line .input-container input {
+  border: none;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.users .management-container .user-line .input-container + .input-container {
+  margin-left: 20px;
+}
+.users .management-container .user-line .btn-message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  padding: 7px;
+  color: #ffffff;
+}
+.users .management-container .user-line .btn-message span {
+  display: inline;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(50, 50, 50, 0.3);
+}
+.users .management-container .user-line .btn-container {
+  flex: 1;
+  padding: 7px;
+}
+.users .management-container .user-line .btn-container .btn {
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #ffffff;
+  opacity: 0.5;
+}
+.users .management-container .user-line .btn-container .btn:hover {
+  opacity: 1;
+}
+.users .management-container .user-line .btn-container .btn span {
+  margin-left: 7px;
+}
+.users .management-container .user-line .btn-container .btn.save {
+  background: #00c800;
+}
+.users .management-container .user-line .btn-container .btn.remove {
+  background: #c80000;
+}
+.users .management-container .user-line .btn-container .btn.reset {
+  background: #3089c9;
+}
+.users .management-container .user-line .btn-container .btn + .btn {
+  margin-left: 5%;
+}
+.users .management-container .user-line .btn-container .btn.inactive {
+  opacity: 0.2;
+  background: rgba(100, 100, 100, 0.8);
+  cursor: initial;
+}
+.users .management-container .user-line .btn-container .btn.inactive:hover {
+  opacity: 0.2;
+}
+.users .management-container .user-line.odd {
+  background: rgba(50, 50, 50, 0.2);
+}
+.users .management-container .user-line.odd .input-container {
+  border-color: #ffffff;
+}
+.users .management-container .user-line.odd .input-container span {
+  color: #ffffff;
+}
+.users .ctrlCards {
+  position: absolute;
+  display: inline-flex;
+  top: 30px;
+  right: 5%;
+  flex-direction: column;
+}
+.users .ctrlCards .ctrlCard {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 7px;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: 0.5s all ease-in-out;
+}
+.users .ctrlCards .ctrlCard + .ctrlCard {
+  margin-top: 20px;
+}
+.users .ctrlCards .ctrlCard:hover {
+  opacity: 1;
+}
+.users .ctrlCards .ctrlCard.addCard {
+  background: #00c800;
+}
 body,
 html {
   margin: 0px !important;

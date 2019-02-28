@@ -46,9 +46,9 @@ class Settings extends Component{
 
                     <div className="input-container">
                         <span>Security Question 1</span>
-                        <select onChange={(e) => this.handleQuestionChange(e,"question",0)}>
+                        <select onChange={(e) => this.handleQuestionChange(e,"question",0)} value={this.state.user.securityQuestions[0].question}>
                             {quesFile.map((item,i) =>
-                                <option key={i} value={item.id} disabled={(this.checkQuestionId(0, item) === true ? null : "true")} selected={this.isSelected(0, item)}>{item.question}</option>
+                                <option key={i} value={item.id} disabled={(this.checkQuestionId(0, item) === true ? null : true)}>{item.question}</option>
                             )}
                         </select>
                         <input type="text" name="secQues1" id="secQues1" value={this.state.user.securityQuestions[0].answer} onChange={(e) => this.handleQuestionChange(e,"answer",0)}/>    
@@ -56,9 +56,9 @@ class Settings extends Component{
 
                     <div className="input-container">
                         <span>Security Question 2</span>
-                        <select onChange={(e) => this.handleQuestionChange(e,"question",1)}>
+                        <select onChange={(e) => this.handleQuestionChange(e,"question",1)} value={this.state.user.securityQuestions[1].question}>
                             {quesFile.map((item,i) =>
-                                <option key={i} value={item.id} disabled={(this.checkQuestionId(1, item) === true ? null : "true")} selected={this.isSelected(1, item)}>{item.question}</option>
+                                <option key={i} value={item.id} disabled={(this.checkQuestionId(1, item) === true ? null : true)}>{item.question}</option>
                             )}
                         </select>
                         <input type="text" name="secQues2" id="secQues2" value={this.state.user.securityQuestions[1].answer} onChange={(e) => this.handleQuestionChange(e,"answer",1)}/>    
@@ -66,9 +66,9 @@ class Settings extends Component{
 
                     <div className="input-container">
                         <span>Security Question 3</span>
-                        <select onChange={(e) => this.handleQuestionChange(e,"question",2)}>
+                        <select onChange={(e) => this.handleQuestionChange(e,"question",2)} value={this.state.user.securityQuestions[2].question}>
                             {quesFile.map((item,i) =>
-                                <option key={i} value={item.id} disabled={(this.checkQuestionId(2, item) === true ? null : "true")} selected={this.isSelected(2, item)}>{item.question}</option>
+                                <option key={i} value={item.id} disabled={(this.checkQuestionId(2, item) === true ? null : true)}>{item.question}</option>
                             )}
                         </select>
                         <input type="text" name="secQues3" id="secQues3" value={this.state.user.securityQuestions[2].answer} onChange={(e) => this.handleQuestionChange(e,"answer",2)}/>    

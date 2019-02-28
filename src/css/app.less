@@ -80,7 +80,27 @@ body, html {
     padding: 15px;
     color: rgba(255,255,255,1);
     
-    .header { margin-bottom: 20px;}
+    .nav-header { 
+        margin-bottom: 20px;
+        display: flex;
+        
+        .navBtn {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            color: rgba(255,255,255,1);
+            border-radius: 50%;
+            padding: 7px;
+            opacity: 0.4;
+            cursor: pointer;
+            background: @color1;
+            transition: 0.5s all ease-in-out; 
+            margin-right: 7px;                                  
+            &:hover { opacity: 1; text-decoration: none;}  
+        }
+        
+    }
     .nav-content {
         display: flex;
         flex-direction: column;
@@ -94,6 +114,8 @@ body, html {
                 text-decoration: none;
                 background: rgba(255,255,255,0.2);
             }
+
+            &.signout { color: @color1; cursor: pointer; }
         }
     }
 }

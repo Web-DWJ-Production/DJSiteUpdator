@@ -610,8 +610,27 @@ html {
   padding: 15px;
   color: #ffffff;
 }
-.sidenav-container .header {
+.sidenav-container .nav-header {
   margin-bottom: 20px;
+  display: flex;
+}
+.sidenav-container .nav-header .navBtn {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 7px;
+  opacity: 0.4;
+  cursor: pointer;
+  background: #f4b042;
+  transition: 0.5s all ease-in-out;
+  margin-right: 7px;
+}
+.sidenav-container .nav-header .navBtn:hover {
+  opacity: 1;
+  text-decoration: none;
 }
 .sidenav-container .nav-content {
   display: flex;
@@ -629,4 +648,8 @@ html {
 .sidenav-container .nav-content .page-item:hover {
   text-decoration: none;
   background: rgba(255, 255, 255, 0.2);
+}
+.sidenav-container .nav-content .page-item.signout {
+  color: #f4b042;
+  cursor: pointer;
 }

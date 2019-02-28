@@ -32,8 +32,8 @@ class ImgCard extends Component{
                         { /* Edit Tool */}
                         <textarea className="content-title h-form noSz" ref="titleRef" value={this.props.item.title} onChange={(e) => this.props.handleTextChange(e,"title",0)}></textarea>
                         {this.props.item.lines.map((line,i) =>
-                            <span>
-                                <textarea key={i} className={"content-line h-form "+ line.size + (line.bold === true ? ' bold': '')} value={line.text} ref={"lineRef"+i} onChange={(e) => this.props.handleTextChange(e,"line",i)}></textarea>
+                            <span key={i}>
+                                <textarea className={"content-line h-form "+ line.size + (line.bold === true ? ' bold': '')} value={line.text} ref={"lineRef"+i} onChange={(e) => this.props.handleTextChange(e,"line",i)}></textarea>
                                 <div className="editLine">                                    
                                         <div className="edit-item textType" onClick={() => this.props.handleTextStyleChange("size",i)}><span>{this.sizeTxt(line.size)}</span></div>
                                         <div className="edit-item bold" onClick={() => this.props.handleTextStyleChange("bold",i)}>

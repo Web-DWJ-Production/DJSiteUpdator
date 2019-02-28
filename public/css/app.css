@@ -352,6 +352,7 @@
   background: #ffffff;
   color: #ffffff;
   opacity: 0.5;
+  transition: 0.5s all ease-in-out;
 }
 .users .management-container .user-line .btn-container .btn:hover {
   opacity: 1;
@@ -415,6 +416,140 @@
 }
 .users .ctrlCards .ctrlCard.addCard {
   background: #00c800;
+}
+.settings {
+  text-align: center;
+}
+.settings .management-container {
+  padding: 2%;
+  position: relative;
+  overflow-y: auto;
+}
+.settings .management-container .input-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 65%;
+  border-radius: 5px;
+  border: 2px solid #000000;
+}
+.settings .management-container .input-container span {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding-bottom: 2px;
+  padding-left: 3px;
+}
+.settings .management-container .input-container input {
+  border: none;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.settings .management-container .input-container + .input-container {
+  margin-top: 20px;
+}
+.settings .management-container .bodyHeader {
+  text-align: left;
+  padding: 7px;
+  margin: 20px 0px 50px;
+  background: rgba(244, 176, 66, 0.3) !important;
+  border-bottom: 2px solid #000000;
+}
+.settings .btn-container {
+  flex: 1;
+  padding: 7px;
+}
+.settings .btn-container .btn {
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #ffffff;
+  opacity: 0.5;
+  transition: 0.5s all ease-in-out;
+}
+.settings .btn-container .btn:hover {
+  opacity: 1;
+}
+.settings .btn-container .btn span {
+  margin-left: 7px;
+}
+.settings .btn-container .btn.save {
+  background: #00c800;
+}
+.settings .btn-container .btn.inactive {
+  opacity: 0.2;
+  background: rgba(100, 100, 100, 0.8);
+  cursor: initial;
+}
+.settings .btn-container .btn.inactive:hover {
+  opacity: 0.2;
+}
+.login {
+  text-align: center;
+}
+.login .login-container {
+  margin-top: 50px;
+}
+.login .login-container .input-container {
+  display: inline-flex;
+  flex-direction: column;
+  text-align: left;
+  width: 55%;
+  border-radius: 5px;
+  border: 2px solid #000000;
+}
+.login .login-container .input-container span {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding-bottom: 2px;
+  padding-left: 3px;
+}
+.login .login-container .input-container input {
+  border: none;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.login .login-container .input-container + .input-container {
+  margin-top: 20px;
+}
+.login .btn-container {
+  flex: 1;
+  padding: 7px;
+  margin-top: 20px;
+}
+.login .btn-container .btn {
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #ffffff;
+  opacity: 0.5;
+  transition: 0.5s all ease-in-out;
+}
+.login .btn-container .btn:hover {
+  opacity: 1;
+}
+.login .btn-container .btn span {
+  margin-left: 7px;
+}
+.login .btn-container .btn.save {
+  background: #323232;
+}
+.login .btn-container .btn.inactive {
+  opacity: 0.2;
+  background: rgba(100, 100, 100, 0.8);
+  cursor: initial;
+}
+.login .btn-container .btn.inactive:hover {
+  opacity: 0.2;
+}
+.login .loginCard {
+  text-align: center;
+}
+.login .loginCard h2 {
+  margin-bottom: 30px;
 }
 body,
 html {

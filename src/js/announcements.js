@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import socketIOClient from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
 
 /* Image */
 import tmpImg from "../assets/imgs/tmp/Pastor2.jpg";

@@ -1,0 +1,66 @@
+.settings {
+    text-align: center;
+
+    .management-container {
+        padding: 2%;
+        position: relative;
+        overflow-y: auto;
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            width: 65%;
+
+            border-radius: 5px;
+            border: 2px solid rgba(0,0,0,1);
+            span { 
+                font-weight: bold; 
+                font-size: .9rem; 
+                padding-bottom:2px; 
+                padding-left: 3px;                    
+            }
+            input { 
+                border: none; 
+                padding: 3px;
+                background: rgba(255,255,255,0.7);
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+
+            &+.input-container { margin-top: 20px;}
+        }
+
+        .bodyHeader {
+            text-align: left;
+            padding: 7px;
+            margin:20px 0px 50px;
+            .color1(background,0.3);
+            border-bottom: 2px solid rgba(0,0,0,1);
+        }
+    }
+
+    .btn-container {
+        flex: 1;
+        padding: 7px;
+        .btn { 
+            padding: 2px 10px; 
+            border-radius: 20px;
+            background: rgba(255,255,255,1);
+            color: rgba(255,255,255,1);                    
+            opacity: 0.5;
+            transition: 0.5s all ease-in-out;
+            &:hover{ opacity: 1; }
+            span { margin-left: 7px;}
+
+            &.save { background: rgba(0,200,0,1);  }
+
+            &.inactive {
+                opacity: 0.2;
+                background: rgba(100,100,100,0.8);
+                cursor: initial;
+                &:hover { opacity:0.2; }
+            }
+        }
+    }
+}

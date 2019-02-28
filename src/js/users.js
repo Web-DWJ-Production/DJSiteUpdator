@@ -88,7 +88,7 @@ class Users extends Component{
         var self = this;
         try {
             var tmpList = self.state.userList;
-            if(tmpList[loc].change) {
+            if(tmpList[loc].changes) {
 
             }
         }

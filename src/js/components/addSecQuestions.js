@@ -66,6 +66,21 @@ class AddSecQuestions extends Component{
         );
     }
 
+    changeCard(page){
+        var self = this;
+        try {
+            if(page === ""){               
+                this.props.changeCard("");                
+            }
+            else if(page === "resetpwd"){               
+                this.props.changeCard("resetpwd");                
+            } 
+        }
+        catch(ex){
+            console.log("Error changing card: ",ex);
+        }
+    }
+
     handleQuestionChange(event, type, loc) {
         var self = this;
         try {
@@ -121,7 +136,7 @@ class AddSecQuestions extends Component{
 
     handleSubmit(){
         try {
-
+            this.changeCard("resetpwd");
         }
         catch(ex){
 
@@ -130,7 +145,7 @@ class AddSecQuestions extends Component{
 
     handleCancel(){
         try {
-
+            this.changeCard("");
         }
         catch(ex){
             

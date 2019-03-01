@@ -13,6 +13,7 @@ class LoginCard extends Component{
         }
         this.handleTextChange = this.handleTextChange.bind(this);
         this.loginUser = this.loginUser.bind(this);
+        this.changeCard = this.changeCard.bind(this);
     }
 
     render(){  
@@ -33,10 +34,34 @@ class LoginCard extends Component{
                 <div className="btn-container">
                     <div className={"btn save" + (this.state.validLogin === true ? "":" inactive")} onClick={this.loginUser}><i className="fas fa-unlock-alt"></i><span>Login</span></div>                                              
                 </div>
+                
+                <div className="btn-link" onClick={() => this.changeCard("forgotpwd")}>Forgot Your Password?</div>
+                <div className="btn-link" onClick={() => this.changeCard("setQues")}>Set Security Questions?</div>
             </div>
         );
     }
     
+    changeCard(page){
+        var self = this;
+        try {
+            if(page === "forgotpwd"){
+                if(self.state.validLogin !== true){
+                    alert("Please enter a valid email address");
+                }
+                else {
+                    /* TODO: check if email address is active */
+                    this.props.changeCard("forgotpwd");
+                }
+            }
+            else if(page === "setQues"){
+                this.props.changeCard("setQues");
+            } 
+        }
+        catch(ex){
+            console.log("Error changing card: ",ex);
+        }
+    }
+
     handleTextChange(event, type){
         var self = this;
         try {
@@ -74,14 +99,17 @@ class LoginCard extends Component{
             var tmpUser = this.state.loginAttempt;
             var status = (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(tmpUser.email)) 
             
-            this.setState({validLogin: status});            
+            this.setState({validLogin: status}, () => { if(status){ this.props.setTempEmail(tmpUser.email); } });            
         }
         catch(ex){
             console.log("Error validating credientials: ",ex);
         }
     }
     componentDidMount(){
-        this.setState({ loginAttempt:{ "email":"","password":""}});
+        var self = this;
+        this.setState({ loginAttempt:{ "email":this.props.tmpEmail,"password":""}}, () => {
+            self.validateCridentials();
+        });
     }
 }
 export default LoginCard;

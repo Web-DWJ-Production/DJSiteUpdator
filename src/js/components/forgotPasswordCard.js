@@ -8,7 +8,7 @@ class ForgotPasswordCard extends Component{
 
         this.state = {
             valid:false,
-            questionId:"Q8",
+            questionId:"",
             answer:""
         }
 
@@ -21,7 +21,12 @@ class ForgotPasswordCard extends Component{
     render(){  
         return(
             <div className="forgotPwd">
-                <h2>Please fill out the field below to reset your password</h2>
+                <h2>Please fill out the question field below with your previous answer to reset your password.</h2>
+
+                <div className="input-container">
+                    <span className="lrg">Email</span>
+                    <input className="readOnly" type="text" name="email" id="email" readOnly value={this.props.tmpEmail} />    
+                </div>
 
                 <div className="input-container">
                     <span className="lrg">{ this.getQuestion(this.state.questionId) }</span>
@@ -31,11 +36,27 @@ class ForgotPasswordCard extends Component{
                 <div className="btn-container">
                     <div className={"btn save" + (this.state.valid === true ? "":" inactive")} onClick={this.handleSubmit}><i className="fas fa-sign-in-alt"></i><span>Submit</span></div>  
                     <div className="btn reset" onClick={this.resetQuestion}><i className="fas fa-redo"></i><span>New Question</span></div>                                            
+                    <div className="btn cancel" onClick={() => this.changeCard("")}><i className="far fa-times-circle"></i><span>Cancel</span></div>                                            
                 </div>
             </div>
         );
     }
     
+    changeCard(page){
+        var self = this;
+        try {
+            if(page === ""){               
+                this.props.changeCard("");                
+            }
+            else if(page === "resetpwd"){               
+                this.props.changeCard("resetpwd");                
+            }
+        }
+        catch(ex){
+            console.log("Error changing card: ",ex);
+        }
+    }
+
     getQuestion(id){
         var ret = null;
         try {
@@ -44,7 +65,7 @@ class ForgotPasswordCard extends Component{
         catch(ex){
 
         }
-        return (ret !== null ? ret.question : "");
+        return (ret ? ret.question : "");
     }
 
     handleTextChange(event){
@@ -61,7 +82,7 @@ class ForgotPasswordCard extends Component{
 
     handleSubmit(){
         try {
-
+            this.changeCard("resetpwd");
         }
         catch(ex){
 
@@ -70,7 +91,7 @@ class ForgotPasswordCard extends Component{
 
     resetQuestion(){
         try {
-
+            this.setState({ questionId:"Q8" })
         }
         catch(ex){
             
@@ -78,7 +99,7 @@ class ForgotPasswordCard extends Component{
     }
 
     componentDidMount(){
-
+        this.resetQuestion();
     }
 }
 export default ForgotPasswordCard;

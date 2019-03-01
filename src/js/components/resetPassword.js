@@ -25,19 +25,30 @@ class ResetPassword extends Component{
                     <input type="password" name="password1" id="password1" value={this.state.password1} onChange={(e) => this.handleTextChange(e)} />    
                 </div>
 
-                <div className="input-container">
+                <div className={"input-container" + (this.state.password1.length > 0 && !this.state.valid ? " nomatch" : "")}>
                     <span className="lrg">Repeat New Password</span>
                     <input type="password" name="password2" id="password2" value={this.state.password2} onChange={(e) => this.handleTextChange(e)} />    
                 </div>
 
                 <div className="btn-container">
-                    <div className={"btn save" + (this.state.valid === true ? "":" inactive")} onClick={this.handleSubmit}><i className="fas fa-sign-in-alt"></i><span>Submit</span></div>  
-                    <div className="btn reset" onClick={this.handleCancel}><i className="fas fa-redo"></i><span>Cancel</span></div>                                            
+                    <div className={"btn save" + (this.state.valid === true ? "":" inactive")} onClick={this.handleSubmit}><i className="fas fa-sign-in-alt"></i><span>Submit</span></div>                                                                  
                 </div>
             </div>
         );
     }
     
+    changeCard(page){
+        var self = this;
+        try {
+            if(page === ""){               
+                this.props.changeCard("");                
+            }            
+        }
+        catch(ex){
+            console.log("Error changing card: ",ex);
+        }
+    }
+
     handleTextChange(event){
         var self = this;
         try {
@@ -57,7 +68,7 @@ class ResetPassword extends Component{
 
     handleSubmit(){
         try {
-
+            this.changeCard("");
         }
         catch(ex){
 

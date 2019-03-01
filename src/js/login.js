@@ -11,10 +11,13 @@ class Login extends Component{
         super(props);
 
         this.state = {
+            tmpEmail:"",
             redirectToReferrer:false,
             cardStatus:""
         }
         this.loginUser = this.loginUser.bind(this);
+        this.changeCard = this.changeCard.bind(this);
+        this.setTempEmail = this.setTempEmail.bind(this);
     }
 
     render(){  
@@ -39,16 +42,16 @@ class Login extends Component{
     loginSwitch(param){
         switch(param){
             case 'resetpwd':
-                return <ResetPassword />;
+                return <ResetPassword changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
                 break;
             case 'forgotpwd':
-                return <ForgotPasswordCard />;
+                return <ForgotPasswordCard changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
                 break;
             case 'setQues':
-                return <AddSecQuestions />;
+                return <AddSecQuestions changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail}  />;
                 break;
             default:
-                return <LoginCard loginUser={this.loginUser}/>;
+                return <LoginCard loginUser={this.loginUser} changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
                 break;            
         }
     }
@@ -65,8 +68,16 @@ class Login extends Component{
         }
     }
 
+    setTempEmail(email){
+        this.setState({ tmpEmail: email });
+    }
+    changeCard(newcard){
+        this.setState({ cardStatus: newcard });
+    }
+
     componentDidMount(){
         this.props.clearList();
+        this.setState({ cardStatus: "", tmpEmail:"" });
     }
 }
 export default Login;

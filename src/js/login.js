@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Redirect } from "react-router-dom";
 
 import LoginCard from './components/loginCard';
+import ForgotPasswordCard from './components/forgotPasswordCard';
+import ResetPassword from './components/resetPassword';
+import AddSecQuestions from './components/addSecQuestions';
 
 class Login extends Component{
     constructor(props) {
         super(props);
 
         this.state = {
-            redirectToReferrer:false
+            redirectToReferrer:false,
+            cardStatus:""
         }
         this.loginUser = this.loginUser.bind(this);
     }
@@ -22,12 +26,33 @@ class Login extends Component{
                 <h1>Login</h1>
 
                 <div className="login-container">
-                    <LoginCard loginUser={this.loginUser}/>
+                    { this.loginSwitch(this.state.cardStatus) }
+                    {/*<LoginCard loginUser={this.loginUser}/> */}
+                    {/*<ForgotPasswordCard /> */}
+                    {/* <ResetPassword /> */}
+                    {/*<AddSecQuestions />*/}
                 </div>
             </div>
         );
     }
     
+    loginSwitch(param){
+        switch(param){
+            case 'resetpwd':
+                return <ResetPassword />;
+                break;
+            case 'forgotpwd':
+                return <ForgotPasswordCard />;
+                break;
+            case 'setQues':
+                return <AddSecQuestions />;
+                break;
+            default:
+                return <LoginCard loginUser={this.loginUser}/>;
+                break;            
+        }
+    }
+
     loginUser(userInfo){
         var self = this;
         try {

@@ -505,6 +505,9 @@
   padding-bottom: 2px;
   padding-left: 3px;
 }
+.login .login-container .input-container span.lrg {
+  font-size: 1.5rem;
+}
 .login .login-container .input-container input {
   border: none;
   padding: 3px;
@@ -537,6 +540,12 @@
 .login .btn-container .btn.save {
   background: #323232;
 }
+.login .btn-container .btn.reset {
+  background: #3089c9;
+}
+.login .btn-container .btn + .btn {
+  margin-left: 5%;
+}
 .login .btn-container .btn.inactive {
   opacity: 0.2;
   background: rgba(100, 100, 100, 0.8);
@@ -549,6 +558,12 @@
   text-align: center;
 }
 .login .loginCard h2 {
+  margin-bottom: 30px;
+}
+.login .forgotPwd {
+  text-align: center;
+}
+.login .forgotPwd h2 {
   margin-bottom: 30px;
 }
 body,

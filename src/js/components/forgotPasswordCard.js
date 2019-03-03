@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-
+import axios from 'axios';
 import quesFile from './secQues';
+
+const baseUrl = "http://localhost:1777";
 
 class ForgotPasswordCard extends Component{
     constructor(props) {
@@ -36,27 +38,12 @@ class ForgotPasswordCard extends Component{
                 <div className="btn-container">
                     <div className={"btn save" + (this.state.valid === true ? "":" inactive")} onClick={this.handleSubmit}><i className="fas fa-sign-in-alt"></i><span>Submit</span></div>  
                     <div className="btn reset" onClick={this.resetQuestion}><i className="fas fa-redo"></i><span>New Question</span></div>                                            
-                    <div className="btn cancel" onClick={() => this.changeCard("")}><i className="far fa-times-circle"></i><span>Cancel</span></div>                                            
+                    <div className="btn cancel" onClick={() => this.props.changeCard("")}><i className="far fa-times-circle"></i><span>Cancel</span></div>                                            
                 </div>
             </div>
         );
     }
     
-    changeCard(page){
-        var self = this;
-        try {
-            if(page === ""){               
-                this.props.changeCard("");                
-            }
-            else if(page === "resetpwd"){               
-                this.props.changeCard("resetpwd");                
-            }
-        }
-        catch(ex){
-            console.log("Error changing card: ",ex);
-        }
-    }
-
     getQuestion(id){
         var ret = null;
         try {
@@ -69,6 +56,7 @@ class ForgotPasswordCard extends Component{
     }
 
     handleTextChange(event){
+        var self = this;
         try {
             var tmpAnswer = this.state.answer;            
             tmpAnswer = event.target.value;            
@@ -81,17 +69,47 @@ class ForgotPasswordCard extends Component{
     }
 
     handleSubmit(){
+        var self = this;
         try {
-            this.changeCard("resetpwd");
+            var postData = {"email":this.props.tmpEmail, "questionId": this.state.questionId, "answer":this.state.answer};
+
+            axios.post(baseUrl + "/api/compareQuestionAnswer", postData, {'Content-Type': 'application/json'})
+            .then(function(response) {
+                var data = response.data;
+                if(data.errorMessage){
+                    alert("Unable to compare answers: " + data.errorMessage);
+                }
+                else{
+                    if(data.results !== true){
+                        alert("Unable to compare answers");
+                    }
+                    self.props.changeCard(data.returnStatus);
+                }                    
+            });   
         }
         catch(ex){
-
+            console.log("Error comparing password: ",ex);
         }
     }
 
     resetQuestion(){
+        var self = this;
         try {
-            this.setState({ questionId:"Q8" })
+            var postData = {"email":this.props.tmpEmail};
+
+            axios.post(baseUrl + "/api/getResetQuestion", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {
+                    var data = response.data;
+                    if(data.errorMessage){
+                        alert("Unable to get security question: " + data.errorMessage);
+                    }
+                    else if(data.results){
+                        self.setState({ questionId:data.results });
+                    }
+                    else {
+                        alert("Unable to get security question");
+                    }                    
+            });  
         }
         catch(ex){
             

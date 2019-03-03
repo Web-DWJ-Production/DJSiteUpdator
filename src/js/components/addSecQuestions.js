@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import quesFile from './secQues';
+
+const baseUrl = "http://localhost:1777";
 
 class AddSecQuestions extends Component{
     constructor(props) {
@@ -135,21 +138,32 @@ class AddSecQuestions extends Component{
     }
 
     handleSubmit(){
+        var self = this;
         try {
-            this.changeCard("resetpwd");
+            var postData = {"email":this.props.tmpEmail, "securityQuestions": this.state.securityQuestions};
+
+            axios.post(baseUrl + "/api/setSecurityQuestions", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {
+                    var data = response.data;
+                    if(data.errorMessage){
+                        alert("Unable to set security questions: " + data.errorMessage);
+                    }
+                    else if(data.results == true){
+                        self.props.changeCard(data.returnStatus);
+                    }
+                    else {
+                        alert("Unable to set security questions");
+                        self.props.changeCard(data.returnStatus);
+                    }                    
+            });       
         }
         catch(ex){
-
+            console.log(" [Error] setting questions: ",ex);
         }
     }
 
-    handleCancel(){
-        try {
-            this.changeCard("");
-        }
-        catch(ex){
-            
-        }
+    handleCancel(){        
+        this.changeCard("");        
     }
 
     componentDidMount(){}

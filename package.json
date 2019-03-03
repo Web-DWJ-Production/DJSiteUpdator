@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "bcrypt": "^3.0.4",
     "flickrapi": "^0.6.0",
     "globalize": "^1.4.0",
     "moment": "^2.24.0",

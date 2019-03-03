@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
+const baseUrl = "http://localhost:1777";
 
 class ResetPassword extends Component{
     constructor(props) {
@@ -12,7 +15,6 @@ class ResetPassword extends Component{
 
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
     }
 
     render(){  
@@ -67,20 +69,27 @@ class ResetPassword extends Component{
     }
 
     handleSubmit(){
+        var self = this;
         try {
-            this.changeCard("");
+            var postData = {"email":this.props.tmpEmail, "password": this.state.password1};
+
+            axios.post(baseUrl + "/api/setNewPassword", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {
+                    var data = response.data;
+                    if(data.errorMessage){
+                        alert("Unable to reset password: " + data.errorMessage);
+                    }
+                    else if(data.results == true){
+                        self.props.changeCard(data.returnStatus);
+                    }
+                    else {
+                        alert("Unable to set password");
+                        self.props.changeCard(data.returnStatus);
+                    }                    
+            });   
         }
         catch(ex){
-
-        }
-    }
-
-    handleCancel(){
-        try {
-
-        }
-        catch(ex){
-            
+            console.log("Error Setting Password: ",ex);
         }
     }
 
@@ -94,11 +103,9 @@ class ResetPassword extends Component{
             }
         }
         catch(ex){
-            
+            console.log("Error validating password: ", ex);
         }
     }
-    componentDidMount(){
-
-    }
+    componentDidMount(){}
 }
 export default ResetPassword;

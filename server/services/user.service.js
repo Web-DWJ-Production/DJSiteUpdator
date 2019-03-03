@@ -32,7 +32,7 @@ var user = {
                     res.status(200).json(response);
                 }
                 else {
-                    if(!ret.securityQuestions || ret.securityQuestions.length() == 0){
+                    if(!ret.securityQuestions || ret.securityQuestions.length == 0){
                         response.returnStatus = retLocations.securityQuestions;
                         res.status(200).json(response);
                     }
@@ -203,7 +203,7 @@ module.exports = user;
 /* Get User From DB */
 function _getUserByEmail(email, callback){
     try {
-        mongoClient.connect(database.remoteUrl, mongoOptions, function(err, client){
+        mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
             const db = client.db(database.dbName).collection('users');
             db.find({ 'email' : email }).toArray(function(err, res){
                 var ret = null;
@@ -213,7 +213,7 @@ function _getUserByEmail(email, callback){
         });
     }
     catch(ex){
-        console.log("Error Getting User ", uname," :", ex);
+        console.log("Error Getting User ", email," :", ex);
         callback(null);
     }
 }

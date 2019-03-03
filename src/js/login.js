@@ -6,6 +6,8 @@ import ForgotPasswordCard from './components/forgotPasswordCard';
 import ResetPassword from './components/resetPassword';
 import AddSecQuestions from './components/addSecQuestions';
 
+const baseUrl = "";
+
 class Login extends Component{
     constructor(props) {
         super(props);

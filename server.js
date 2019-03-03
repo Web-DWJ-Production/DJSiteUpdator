@@ -3,8 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+//var http = require('http').Server(app);
+//var io = require('socket.io')(http);
 
 const port = process.env.PORT || '1777';
 
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', require('./server/controller/routes.controller.js'));
 
 // SOCKET CONNECTION
-require('./server/controllers/netsock.controller.js')(io);
+//require('./server/controllers/netsock.controller.js')(io);
 
 // Point static path to dist
 app.use(express.static(path.join(__dirname, 'build')));

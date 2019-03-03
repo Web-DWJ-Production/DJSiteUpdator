@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 
+import axios from 'axios';
+
+const baseUrl = "http://localhost:1777";
+
 class LoginCard extends Component{
     constructor(props) {
         super(props);
@@ -83,7 +87,21 @@ class LoginCard extends Component{
         var self = this;
         try {
             if(self.state.validLogin === true){
-                self.props.loginUser(self.state.loginAttempt);
+                var postData = this.state.loginAttempt;
+
+                axios.post(baseUrl + "/api/validateUser", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {
+                    var data = response.data;
+                    if(data.errorMessage){
+                        alert("Unable to login: " + data.errorMessage);
+                    }
+                    else if(data.results){
+                        self.props.loginUser(data.results);
+                    }
+                    else {
+                        self.props.changeCard(data.returnStatus);
+                    }                    
+                });                
             }
             else {
                 alert("Please Check Login Credentials");

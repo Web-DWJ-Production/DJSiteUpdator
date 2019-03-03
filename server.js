@@ -3,10 +3,18 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
 
-//var http = require('http').Server(app);
-//var io = require('socket.io')(http);
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 const port = process.env.PORT || '1777';
+
+
+
+app.use(bodyParser.json());
+// Point static path to dist
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set Cors Header
 app.use((req, res, next) => { 
@@ -15,25 +23,21 @@ app.use((req, res, next) => {
   next();  
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 // Set our api routes
 app.use('/api', require('./server/controller/routes.controller.js'));
 
 // SOCKET CONNECTION
-//require('./server/controllers/netsock.controller.js')(io);
+require('./server/controller/netsock.controller.js')(io);
 
-// Point static path to dist
-app.use(express.static(path.join(__dirname, 'build')));
+
 
 // Catch all other routes and return the index file
-app.get('*', (req, res) => {
+/*app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build','index.html'));
-});
+});*/
 
 // start app
-app.listen(port);
+//app.listen(port);
+//console.log('Application is open on port ' + port);
 
-// User message
-console.log('Application is open on port ' + port);
+http.listen(port, function(){ console.log('Application is open on port ' + port); });

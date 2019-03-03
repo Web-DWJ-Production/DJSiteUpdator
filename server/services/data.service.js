@@ -4,6 +4,7 @@ var request = require('request');
 
 var database = require('../config/database');
 var mongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
 
 var activeStatus = false;
 
@@ -47,11 +48,11 @@ var data = {
             res.status(200).json(response);
         }
     },
-    deleteAnnouncements:function(req,res){ 
+    removeAnnouncement:function(req,res){ 
         var response = {"errorMessage":null, "results":null};
 
         try {
-            var deleteID = req.body.deleteID;
+            var deleteID = req.body.id;
 
             mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
                 if(err) {
@@ -60,9 +61,9 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
-                    db.remove({ _id: ObjectId(deleteID) });
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
 
-                    response.results = "Success";
+                    response.results = true;
                     res.status(200).json(response);
                 }
             });
@@ -86,19 +87,17 @@ var data = {
                     const db = client.db(database.dbName).collection('announcements');
                     
                     list.forEach(function(item){
-                        if(item._id !== null ){
+                        if(item._id){
                             /* Update */
-                            db.update({ _id: item._id }, item, {upsert: true, useNewUrlParser: true});
-                            console.log(" [DEBUG] Record Updated");
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {
                             /* Add New */
                             db.insert(item);
-                            console.log(" [DEBUG] Record Inserted");
                         }
                     });
 
-                    response.results = "Success";
+                    response.results = true;
                     callback(response);
                 }
             });

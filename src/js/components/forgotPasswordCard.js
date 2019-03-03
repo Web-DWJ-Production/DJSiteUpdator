@@ -56,7 +56,6 @@ class ForgotPasswordCard extends Component{
     }
 
     handleTextChange(event){
-        var self = this;
         try {
             var tmpAnswer = this.state.answer;            
             tmpAnswer = event.target.value;            
@@ -71,10 +70,12 @@ class ForgotPasswordCard extends Component{
     handleSubmit(){
         var self = this;
         try {
+            self.props.toggleLoader(true);
             var postData = {"email":this.props.tmpEmail, "questionId": this.state.questionId, "answer":this.state.answer};
 
             axios.post(baseUrl + "/api/compareQuestionAnswer", postData, {'Content-Type': 'application/json'})
             .then(function(response) {
+                self.props.toggleLoader(false);
                 var data = response.data;
                 if(data.errorMessage){
                     alert("Unable to compare answers: " + data.errorMessage);
@@ -95,10 +96,12 @@ class ForgotPasswordCard extends Component{
     resetQuestion(){
         var self = this;
         try {
+            self.props.toggleLoader(true);
             var postData = {"email":this.props.tmpEmail};
 
             axios.post(baseUrl + "/api/getResetQuestion", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {
+                    self.props.toggleLoader(false);
                     var data = response.data;
                     if(data.errorMessage){
                         alert("Unable to get security question: " + data.errorMessage);

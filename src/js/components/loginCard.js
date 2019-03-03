@@ -40,7 +40,6 @@ class LoginCard extends Component{
                 </div>
                 
                 <div className="btn-link" onClick={() => this.changeCard("forgotpwd")}>Forgot Your Password?</div>
-                <div className="btn-link" onClick={() => this.changeCard("setQues")}>Set Security Questions?</div>
             </div>
         );
     }
@@ -88,9 +87,11 @@ class LoginCard extends Component{
         try {
             if(self.state.validLogin === true){
                 var postData = this.state.loginAttempt;
+                self.props.toggleLoader(true);
 
                 axios.post(baseUrl + "/api/validateUser", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {
+                    self.props.toggleLoader(false);
                     var data = response.data;
                     if(data.errorMessage){
                         alert("Unable to login: " + data.errorMessage);

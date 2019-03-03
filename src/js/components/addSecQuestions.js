@@ -69,21 +69,6 @@ class AddSecQuestions extends Component{
         );
     }
 
-    changeCard(page){
-        var self = this;
-        try {
-            if(page === ""){               
-                this.props.changeCard("");                
-            }
-            else if(page === "resetpwd"){               
-                this.props.changeCard("resetpwd");                
-            } 
-        }
-        catch(ex){
-            console.log("Error changing card: ",ex);
-        }
-    }
-
     handleQuestionChange(event, type, loc) {
         var self = this;
         try {
@@ -100,14 +85,13 @@ class AddSecQuestions extends Component{
     }
 
     checkQuestionId(locId, ques) {
-        var self = this;
         var ret = false;
         try {
            if(locId+1 <= this.state.securityQuestions.length) {
                var idList = this.state.securityQuestions.map(function (ques) {
                     return ques.question
                });
-               if((ques.id == this.state.securityQuestions[locId].question) ||
+               if((ques.id === this.state.securityQuestions[locId].question) ||
                 !(idList.includes(ques.id))){
                     ret = true;
                } 
@@ -140,15 +124,18 @@ class AddSecQuestions extends Component{
     handleSubmit(){
         var self = this;
         try {
+            self.props.toggleLoader(true);
+
             var postData = {"email":this.props.tmpEmail, "securityQuestions": this.state.securityQuestions};
 
             axios.post(baseUrl + "/api/setSecurityQuestions", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {
+                    self.props.toggleLoader(false);
                     var data = response.data;
                     if(data.errorMessage){
                         alert("Unable to set security questions: " + data.errorMessage);
                     }
-                    else if(data.results == true){
+                    else if(data.results === true){
                         self.props.changeCard(data.returnStatus);
                     }
                     else {
@@ -163,7 +150,7 @@ class AddSecQuestions extends Component{
     }
 
     handleCancel(){        
-        this.changeCard("");        
+        this.props.changeCard("");        
     }
 
     componentDidMount(){}

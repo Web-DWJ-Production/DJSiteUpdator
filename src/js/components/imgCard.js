@@ -30,7 +30,7 @@ class ImgCard extends Component{
 
                     <div className="card-content">
                         { /* Edit Tool */}
-                        <textarea className="content-title h-form noSz" ref="titleRef" value={this.props.item.title} onChange={(e) => this.props.handleTextChange(e,"title",0)}></textarea>
+                        <textarea className="content-title h-form" ref="titleRef" value={this.props.item.title} onChange={(e) => this.props.handleTextChange(e,"title",0)}></textarea>
                         {this.props.item.lines.map((line,i) =>
                             <span key={i}>
                                 <textarea className={"content-line h-form "+ line.size + (line.bold === true ? ' bold': '')} value={line.text} ref={"lineRef"+i} onChange={(e) => this.props.handleTextChange(e,"line",i)}></textarea>
@@ -53,7 +53,6 @@ class ImgCard extends Component{
     }
 
     componentWillReceiveProps(){
-        var self = this;
         this.setState({ isSelected: this.props.isSelected });
     }
 

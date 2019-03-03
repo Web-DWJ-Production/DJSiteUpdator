@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client';
+import axios from 'axios';
 
 /* Image */
 import tmpImg from "../assets/imgs/tmp/Pastor2.jpg";
@@ -8,27 +9,19 @@ import defaultImg from "../assets/imgs/amez_logo.png";
 /* Cards */
 import ImgCard from "./components/imgCard";
 const textSizes = ["paragraph","h1","h2"];
-const baseUrl = "";
+const baseUrl = "http://localhost:1777";
+var localSock = null;
 
 class Announcements extends Component{
     constructor(props) {
         super(props);
 
         this.state = {
-            localSock:null,
             maxList:7,
             selectedId:0,
             selectedItem:{},
             refreshItem:false,
-            announcementList:[
-                {type:"carousel-card-img", title:"Welcome", media:tmpImg, lines:[
-                    {size:"paragraph", bold:false, text:"Our vision is to affect a completely transformed community of faith, worthy of citizenship in the Kingdom of God, by the power of God through His Son Jesus Christ. Our mission is to produce ministries that will serve the CAUSE of Christ through the spiritual transformation of minds, bodies and spirits."},
-                    {size:"paragraph", bold:false, text:"Sunday morning worship services begin at 10:00 AM.  Visitors, we encourage you to be sure to explore our 'Galleries' tab."}
-                ]},
-                {type:"carousel-card-img", title:"Announcement 2", media:tmpImg, lines:[{size:"h1", bold:true, text:"Test 2"}]},
-                {type:"carousel-card-img", title:"Announcement 3", media:tmpImg, lines:[{size:"h1", bold:true, text:"Test 3"}]},
-                {type:"carousel-card-img", title:"Announcement 4", media:tmpImg, lines:[{size:"h1", bold:true, text:"Test 4"}]}
-            ]
+            announcementList:[]
         }
 
         this.changeSelected = this.changeSelected.bind(this);
@@ -41,6 +34,7 @@ class Announcements extends Component{
         this.addAnnouncement = this.addAnnouncement.bind(this);
         this.removeAnnouncement = this.removeAnnouncement.bind(this);
         this.saveAnnouncements = this.saveAnnouncements.bind(this);
+        this.getAnnouncements = this.getAnnouncements.bind(this);
     }
 
     render(){  
@@ -86,8 +80,7 @@ class Announcements extends Component{
             var tmpList = self.state.announcementList;
 
             tmpList.forEach(function(element,index){ element.order = index+1;  });
-            /* UPDATE LIST VIA SOCKET */
-            self.localSock.emit('update announcements', tmpList);
+            localSock.emit('update announcements', {"list": tmpList});
         }
         catch(ex){
             console.log(" Error saving announcements: ", ex);
@@ -102,9 +95,18 @@ class Announcements extends Component{
                 var status = window.confirm("You are about to remove '"+tmpList[self.state.selectedId].title+"' is this OK?");
                 
                 if(status === true){
-                    /* TODO GET ID & REMOVE ELEMENT FROM DB */
-                    tmpList.splice(self.state.selectedId,1);
-                    self.setState({ announcementList:tmpList });
+                    var tmpRemoved = tmpList.splice(self.state.selectedId,1);
+                    var postData = {"id": tmpRemoved[0]._id };
+
+                    axios.post(baseUrl + "/api/removeAnnouncement", postData, {'Content-Type': 'application/json'})
+                        .then(function(response) {                        
+                            if(response.data && response.data.results){                                
+                                self.setState({ announcementList:tmpList }, () => { alert("Successfully deleted user"); });
+                            }
+                            else {
+                                alert("Error deleting user: " + response.data.errorMessage);
+                            }
+                    });  
                 }
             }
         }
@@ -118,7 +120,7 @@ class Announcements extends Component{
         try {
             if(this.state.announcementList.length < this.state.maxList) {
                 var tmpList = this.state.announcementList;
-                tmpList.unshift({type:"carousel-card-img", title:"New Title", media:defaultImg, lines:[]});
+                tmpList.unshift({type:"card-img", title:"New Title", media:defaultImg, lines:[]});
                 self.setState({ announcementList:tmpList });
             }
         }
@@ -209,21 +211,44 @@ class Announcements extends Component{
     initSocket(user){
         var self = this;
         try {
-            var socketQuery = "userid="+ user.userId +"&token="+user.token;
-            /*this.setState({ localSock: socketIOClient(baseUrl, {query: socketQuery}) }, () => {
-                self.localSock.on('update announcements',function(res) {
-                    console.log(res);
-                });
-            });*/
+            var socketQuery = "userid="+ user.email +"&token="+user._id;
+            localSock = socketIOClient(baseUrl, {query: socketQuery});
+            localSock.on('update announcements',function(res) {
+                if(res.results){
+                    alert("Successfully updated announcement list");
+                    self.getAnnouncements();
+                }
+                else {
+                    alert("Error updating announcement list: ", res.errorMessage);
+                }
+            });
         }
         catch(ex){
             console.log("Error init socket: ",ex);
         }
     }
+    
+    getAnnouncements(){
+        var self = this;
+        try {
+            fetch(baseUrl + "/api/getAnnouncements")
+            .then(function(response) {
+                if (response.status >= 400) {throw new Error("Bad response from server"); }
+                return response.json();
+            })
+            .then(function(data) {
+                self.setState({ announcementList: data.results});
+            });
+        }
+        catch(ex){
+            console.log(" Error loading announcements: ",ex);
+        }
+    }
 
-    componentDidMount(){
+    componentWillMount(){
         this.props.setList();
-        //this.initSocket({userId:"test",token:"123abc"});
+        this.getAnnouncements();
+        this.initSocket(this.props.currentUser);
 
         this.setState({selectedId:0});
     }

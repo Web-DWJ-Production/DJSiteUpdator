@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import LoginCard from './components/loginCard';
 import ForgotPasswordCard from './components/forgotPasswordCard';
 import ResetPassword from './components/resetPassword';
 import AddSecQuestions from './components/addSecQuestions';
 
-const baseUrl = "";
 
 class Login extends Component{
     constructor(props) {
@@ -15,11 +14,13 @@ class Login extends Component{
         this.state = {
             tmpEmail:"",
             redirectToReferrer:false,
-            cardStatus:""
+            cardStatus:"",
+            loader:false
         }
         this.loginUser = this.loginUser.bind(this);
         this.changeCard = this.changeCard.bind(this);
         this.setTempEmail = this.setTempEmail.bind(this);
+        this.toggleLoader = this.toggleLoader.bind(this);
     }
 
     render(){  
@@ -30,6 +31,7 @@ class Login extends Component{
             <div className="page-container login">
                 <h1>Login</h1>
 
+                { this.state.loader && <div className="loader"><i className="fas fa-spinner fa-spin"></i></div> }
                 <div className="login-container">
                     { this.loginSwitch(this.state.cardStatus) }
                 </div>
@@ -40,17 +42,13 @@ class Login extends Component{
     loginSwitch(param){
         switch(param){
             case 'resetpwd':
-                return <ResetPassword changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
-                break;
+                return <ResetPassword changeCard={this.changeCard} setTempEmail={this.setTempEmail} toggleLoader={this.toggleLoader} tmpEmail={this.state.tmpEmail} />;
             case 'forgotpwd':
-                return <ForgotPasswordCard changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
-                break;
+                return <ForgotPasswordCard changeCard={this.changeCard} setTempEmail={this.setTempEmail} toggleLoader={this.toggleLoader} tmpEmail={this.state.tmpEmail} />;
             case 'setQues':
-                return <AddSecQuestions changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail}  />;
-                break;
+                return <AddSecQuestions changeCard={this.changeCard} setTempEmail={this.setTempEmail} toggleLoader={this.toggleLoader} tmpEmail={this.state.tmpEmail}  />;
             default:
-                return <LoginCard loginUser={this.loginUser} changeCard={this.changeCard} setTempEmail={this.setTempEmail} tmpEmail={this.state.tmpEmail} />;
-                break;            
+                return <LoginCard loginUser={this.loginUser} changeCard={this.changeCard} setTempEmail={this.setTempEmail} toggleLoader={this.toggleLoader} tmpEmail={this.state.tmpEmail} />;         
         }
     }
 
@@ -71,6 +69,10 @@ class Login extends Component{
     }
     changeCard(newcard){
         this.setState({ cardStatus: newcard });
+    }
+
+    toggleLoader(status){
+        this.setState({ loader: status });
     }
 
     componentDidMount(){

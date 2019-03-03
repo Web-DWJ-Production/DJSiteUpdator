@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
+const baseUrl = "http://localhost:1777";
 
 class Users extends Component{
     constructor(props) {
         super(props);
 
         this.state = {
-            userList:[
-                {_id:"1", admin:true, email:"testuser1@testmail.com", name:"Test User 1"},
-                {_id:"2", email:"testuser2@testmail.com", name:"Test User 2"},
-                {_id:"3", email:"testuser3@testmail.com", name:"Test User 3"},
-                {_id:"4", email:"testuser4@testmail.com", name:"Test User 4"},
-                {_id:"5", email:"testuser5@testmail.com", name:"Test User 5"}
-            ]
+            userList:[]
         }
 
         this.handleTextChange = this.handleTextChange.bind(this);
         this.removeUser = this.removeUser.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
-        this.resetPassword = this.resetPassword.bind(this);
         this.addUser = this.addUser.bind(this);
     }
 
@@ -31,7 +27,7 @@ class Users extends Component{
 
                 <div className="management-container">
                     {this.state.userList.map((item,i) =>
-                        <div key={i} className={"user-line" + (i%2==0?" odd":"")}>
+                        <div key={i} className={"user-line" + (i%2===0?" odd":"")}>
                             <div className="input-container">
                                 <span>Name</span>
                                 <input type="text" name="userName" id="userName" value={item.name} onChange={(e) => this.handleTextChange(e,"name",i)} />    
@@ -46,7 +42,6 @@ class Users extends Component{
                                 :                            
                                 <div className="btn-container">
                                     <div className={"btn save" + (item.changes === true ? "":" inactive")} onClick={() => this.saveChanges(i)}><i className="fas fa-save"></i><span>Save Changes</span></div>                                
-                                    <div className="btn reset" onClick={() => this.resetPassword(i)}><i className="fab fa-rev"></i><span>Reset Password</span></div>
                                     <div className="btn remove" onClick={() => this.removeUser(i)}><i className="fas fa-user-times"></i><span>Remove User</span></div>
                                 </div>
                             )}
@@ -89,11 +84,17 @@ class Users extends Component{
         try {
             var tmpList = self.state.userList;
             if(tmpList[loc].changes) {
+                var postData = {"user": tmpList[loc]};
 
+                axios.post(baseUrl + "/api/updateUser", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {                        
+                    var data = response.data;                    
+                    alert((data.results ? "Successfully updated user" : "Error updating user: " + data.errorMessage));
+                }); 
             }
         }
         catch(ex){
-
+            console.log("Error saving changes: ",ex);
         }
     }
 
@@ -104,38 +105,43 @@ class Users extends Component{
             
             if(tmpList.length > 0) {
                 var status = window.confirm("You are about to remove "+tmpList[loc].name+" is this OK?");
-                if(status === true){
-                    /* TODO GET ID & REMOVE ELEMENT FROM DB */                
-                    var tmpRemoved = tmpList.splice(loc,1);
-                    self.setState({ userList:tmpList });
+                if(status === true){          
+                    var tmpRemoved = tmpList.splice(loc,1);                    
+                    var postData = {"id": tmpRemoved[0]._id };
+
+                    axios.post(baseUrl + "/api/removeUser", postData, {'Content-Type': 'application/json'})
+                        .then(function(response) {                        
+                            if(response.data && response.data.results){                                
+                                self.setState({ userList:tmpList }, () => { alert("Successfully deleted user"); });
+                            }
+                            else {
+                                alert("Error deleting user: " + response.data.errorMessage);
+                            }
+                    });  
                 }
             }
         }
         catch(ex){
-            
-        }
-    }
-
-    resetPassword(loc){
-        var self = this;
-        try {
-
-        }
-        catch(ex){
-            
+            console.log("Error deleting user: ",ex);
         }
     }
 
     loadUserList(){
         var self = this;
         try {
+            var postData = {"id": null };
 
+            axios.post(baseUrl + "/api/getUsers", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {                        
+                    var list = (response.data && response.data.results ? response.data.results : []);
+                    self.setState({ userList: list });
+            });   
         }
         catch(ex){
-
+            console.log("Error loading user list");
         }
     }
-    componentDidMount(){
+    componentWillMount(){
         this.props.setList();
         this.loadUserList();
     }

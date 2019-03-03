@@ -5,6 +5,7 @@ var request = require('request');
 
 var database = require('../config/database');
 var mongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
 
 var activeStatus = false;
 var retLocations = {
@@ -193,6 +194,104 @@ var user = {
             console.log(response.errorMessage);
             res.status(200).json(response);
         }
+    },
+    updateUser:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+
+        var user = req.body.user;
+
+        try {
+            _avaliableEmail(user.email, user._id,function(ret){
+                if(!ret) {
+                    response.errorMessage = "Sorry this email address is already in use";
+                    res.status(200).json(response);
+                }
+                else {
+                    mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                        if(err) {
+                            response.results = false;
+                            response.errorMessage = err;
+                            res.status(200).json(response);
+                        }
+                        else {
+                            const db = client.db(database.dbName).collection('users');                           
+                           
+                            if(user._id ){
+                                /* Update */                                
+                                db.updateOne({ "_id": ObjectId(user._id) }, { $set: { name: user.name, email:user.email, securityQuestions: user.securityQuestions}}, {upsert: true, useNewUrlParser: true});
+                            }
+                            else {
+                                /* Add New */
+                                db.insert(user);
+                            }                            
+        
+                            response.results = true;
+                            res.status(200).json(response);
+                        }
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating user: " + ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    getUsers:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+        var id = req.body.id;
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('users');                           
+                    var query = {};
+                    if(id !== null ){
+                        query = {"_id":ObjectId(id)};
+                    }                        
+
+                    db.find(query, {password:0}).toArray(function(err, ret){
+                        response.results = ret;                
+                        res.status(200).json(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting user: " + ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    removeUser:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+        var deleteID = req.body.id;
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('users');                           
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting user: " + ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
     }
 }
 
@@ -216,4 +315,12 @@ function _getUserByEmail(email, callback){
         console.log("Error Getting User ", email," :", ex);
         callback(null);
     }
+}
+
+/* Get User From DB */
+function _avaliableEmail(email, id, callback){
+    _getUserByEmail(email, function(ret){
+        var status = (!ret || ret._id == id);
+        callback(status);
+    });
 }

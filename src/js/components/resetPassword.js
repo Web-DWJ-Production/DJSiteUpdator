@@ -38,18 +38,6 @@ class ResetPassword extends Component{
             </div>
         );
     }
-    
-    changeCard(page){
-        var self = this;
-        try {
-            if(page === ""){               
-                this.props.changeCard("");                
-            }            
-        }
-        catch(ex){
-            console.log("Error changing card: ",ex);
-        }
-    }
 
     handleTextChange(event){
         var self = this;
@@ -71,15 +59,17 @@ class ResetPassword extends Component{
     handleSubmit(){
         var self = this;
         try {
+            self.props.toggleLoader(true);
             var postData = {"email":this.props.tmpEmail, "password": this.state.password1};
 
             axios.post(baseUrl + "/api/setNewPassword", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {
+                    self.props.toggleLoader(false);
                     var data = response.data;
                     if(data.errorMessage){
                         alert("Unable to reset password: " + data.errorMessage);
                     }
-                    else if(data.results == true){
+                    else if(data.results === true){
                         self.props.changeCard(data.returnStatus);
                     }
                     else {

@@ -52,7 +52,7 @@ class App extends Component{
                 this.state.user === null ? 
                     <Redirect key={i} to="/login" from={route.path} />
                     :
-                    <Route key={i} exact path={route.path} render={props => ( <route.component {...props} routeList={this.state.routeList} setList={this.setRouteList} clearList={this.clearRouteList}/>)} />   
+                    <Route key={i} exact path={route.path} render={props => ( <route.component {...props} routeList={this.state.routeList} setList={this.setRouteList} clearList={this.clearRouteList} currentUser={this.state.user} />)} />   
             ))
         )
     }

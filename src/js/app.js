@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import Sidebar from "react-sidebar";
 
 /* Components */
@@ -12,6 +12,8 @@ import NoMatch from './noMatch';
 import Settings from './settings';
 import Login from './login';
 
+const userKey = "dwjSystemUser";
+
 const routes = [
     { title:"Announcements", path:"/announcements", component:Announcements},
     { title:"Users", privilage:true, path:"/users", component:Users},
@@ -23,6 +25,7 @@ class App extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            redirectToHome:false,
             user:null,
             sidebarOpen: false,
             routeList: []
@@ -58,7 +61,7 @@ class App extends Component{
         var siteRoutes = this.buildLoginRoutes();        
 
         return (
-            <Router>                
+            <Router>           
                 <Sidebar sidebar={<DWJSideNav pageList={this.state.routeList} user={this.state.user} signOutUser={this.signOutUser}/>}  open={this.state.sidebarOpen} onSetOpen={this.onSetSidebarOpen} styles={{ sidebar: { background: "rgba(50,50,50,0.95)", zIndex: 1000 } }}>
                     {(this.state.user === null ?
                         <span></span>
@@ -96,13 +99,36 @@ class App extends Component{
     setRouteList(){
         this.setState({ routeList: routes, sidebarOpen: false });
     }
+    getUser(){
+        var self = this;
+        try {
+            var sessionUser = sessionStorage.getItem(userKey);
+            if(sessionUser){
+                var userResponse = JSON.parse(sessionUser);
+                self.setState({user: userResponse, redirectToHome: true});
+            }
+        }
+        catch(ex){
+            console.log("Error pulling sessiong user:",ex);
+        }        
+    }
+
     setUser(userInfo, cb){
         this.setState({user: userInfo}, ()=> {
+            var userStr = JSON.stringify(userInfo);
+            sessionStorage.setItem(userKey, userStr);
             cb(true);
         });
     }
     signOutUser() {
-        this.setState({user: null});
+        this.setState({user: null}, ()=>{ sessionStorage.removeItem(userKey); });
+    }
+    componentWillMount(){
+        this.getUser();
+    }
+
+    componentDidMount(){
+        this.getUser();
     }
 }
 

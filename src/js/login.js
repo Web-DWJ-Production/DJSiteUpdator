@@ -32,10 +32,6 @@ class Login extends Component{
 
                 <div className="login-container">
                     { this.loginSwitch(this.state.cardStatus) }
-                    {/*<LoginCard loginUser={this.loginUser}/> */}
-                    {/*<ForgotPasswordCard /> */}
-                    {/* <ResetPassword /> */}
-                    {/*<AddSecQuestions />*/}
                 </div>
             </div>
         );
@@ -61,7 +57,7 @@ class Login extends Component{
     loginUser(userInfo){
         var self = this;
         try {
-            self.props.setUser({"_id":"U1", "name":"John Doe", "email":userInfo.email, "admin":false}, function(ret){
+            self.props.setUser(userInfo, function(ret){
                 self.setState({redirectToReferrer: ret});
             });
         }

@@ -39,7 +39,7 @@ var user = {
                     else {
                         bcrypt.compare(password, ret.password, function(err, resCmp){
                             if(resCmp){                                
-                                response.results = {"_id":res._id, "email":res.userId, "name":res.name};
+                                response.results = {"_id":ret._id, "email":ret.email, "name":ret.name};
                             }
                             else {
                                 response.errorMessage = "Invalid Password";

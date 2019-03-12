@@ -7,15 +7,19 @@ import DWJSideNav from './sideNav';
 import Home from './home';
 import UC from './UC';
 import Announcements from './announcements';
+import Songs from './songs';
 import Users from './users';
 import NoMatch from './noMatch';
 import Settings from './settings';
 import Login from './login';
 
-const userKey = "dwjSystemUser";
+const userKey = "dwjSystemUser_Gandhi3x";
 
 const routes = [
-    { title:"Announcements", path:"/announcements", component:Announcements},
+    { title:"Songs", path:"/songs", component:Songs},
+    { title:"Albums", path:"/albums", component:UC},
+    { title:"Mixtapes", path:"/mixtapes", component:UC},
+    { title:"Events", path:"/events", component:UC},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];
@@ -26,7 +30,7 @@ class App extends Component{
         super(props);
         this.state = {
             redirectToHome:false,
-            user:null,
+            user:{ name:"Test", _id:"12abc", email:"test@testmail.com"},
             sidebarOpen: false,
             routeList: []
         };   

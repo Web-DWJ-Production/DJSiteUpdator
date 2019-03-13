@@ -75,7 +75,7 @@ class AddSecQuestions extends Component{
             var tmpQues = self.state.securityQuestions;
             tmpQues[loc][type] = event.target.value;
 
-            this.setState({ user:tmpQues }, () => { 
+            this.setState({ securityQuestions:tmpQues }, () => { 
                 self.validQuestions();
             });
         }

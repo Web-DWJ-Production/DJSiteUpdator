@@ -1,5 +1,29 @@
 /* Material Icons */
 /* Fonts */
+@font-face {
+  font-family: 'Just Another Hand';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Just Another Hand Regular'), local('JustAnotherHand-Regular'), url(https://fonts.gstatic.com/s/justanotherhand/v10/845CNN4-AJyIGvIou-6yJKyptyOpOfr4DG0.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v12/JTUSjIg1_i6t8kCHKm459Wlhzg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Raleway'), local('Raleway-Regular'), url(https://fonts.gstatic.com/s/raleway/v12/1Ptug8zYS_SKggPNyC0ISg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Reenie Beanie';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Reenie Beanie'), local('ReenieBeanie'), url(https://fonts.gstatic.com/s/reeniebeanie/v9/z7NSdR76eDkaJKZJFkkjuvWxXPq1rg.ttf) format('truetype');
+}
 /* Colors */
 .home {
   text-align: center;
@@ -8,7 +32,7 @@
 }
 .home h1 {
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.7);
-  color: rgba(244, 176, 66, 0.5) !important;
+  color: rgba(205, 133, 63, 0.5) !important;
 }
 .home .img-container {
   overflow: hidden;
@@ -85,7 +109,7 @@
 .announcements .announcement-container .list-announcements .list-subcontainer .list-item.selected {
   border-color: #dcdcdc;
   background: rgba(255, 255, 255, 0.5);
-  color: #f4b042;
+  color: #cd853f;
 }
 .announcements .announcement-container .list-announcements .list-subcontainer .list-item.add {
   border-color: #2b9130;
@@ -118,7 +142,7 @@
   color: #ffffff;
   border-radius: 50%;
   padding: 7px;
-  background: #f4b042;
+  background: #cd853f;
   opacity: 0.4;
   cursor: pointer;
   transition: 0.5s all ease-in-out;
@@ -149,7 +173,7 @@
   display: flex;
   justify-content: center;
   color: #ffffff;
-  background: #f4b042;
+  background: #cd853f;
   opacity: 0.3;
   transition: 0.5s all ease-in-out;
   cursor: pointer;
@@ -453,7 +477,7 @@
   text-align: left;
   padding: 7px;
   margin: 20px 0px 50px;
-  background: rgba(244, 176, 66, 0.3) !important;
+  background: rgba(205, 133, 63, 0.3) !important;
   border-bottom: 2px solid #000000;
 }
 .settings .btn-container {
@@ -599,6 +623,9 @@
 .login .forgotPwd h2 {
   margin-bottom: 30px;
 }
+.songs .input-container {
+  width: 100%;
+}
 body,
 html {
   margin: 0px !important;
@@ -620,7 +647,7 @@ html {
   text-align: center;
   display: inline-flex;
   padding: 7px;
-  background: #f4b042;
+  background: #cd853f;
   color: #ffffff;
   flex-direction: column;
   justify-content: center;
@@ -673,7 +700,7 @@ html {
   padding: 7px;
   opacity: 0.4;
   cursor: pointer;
-  background: #f4b042;
+  background: #cd853f;
   transition: 0.5s all ease-in-out;
   margin-right: 7px;
 }
@@ -699,6 +726,147 @@ html {
   background: rgba(255, 255, 255, 0.2);
 }
 .sidenav-container .nav-content .page-item.signout {
-  color: #f4b042;
+  color: #cd853f;
   cursor: pointer;
+}
+/* Input container */
+.input-container {
+  display: inline-flex;
+  flex-direction: column;
+  text-align: left;
+  width: 55%;
+  border-radius: 5px;
+  border: 2px solid #000000;
+}
+.input-container span {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding-bottom: 2px;
+  padding-left: 3px;
+}
+.input-container span.lrg {
+  font-size: 1.5rem;
+}
+.input-container input {
+  border: none;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.input-container input.readOnly {
+  background: rgba(200, 150, 100, 0.2);
+}
+.input-container .react-datepicker-wrapper {
+  width: 100%;
+}
+.input-container .react-datepicker-wrapper .react-datepicker__input-container {
+  width: 100%;
+}
+.input-container .react-datepicker-wrapper .react-datepicker__input-container input {
+  width: 100%;
+}
+.input-container .links-container .link-container {
+  display: flex;
+}
+.input-container .links-container .link-container input {
+  margin-left: 7px;
+  flex: 1;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.input-container .links-container .link-container .action-btns {
+  margin-left: 14px;
+  padding-right: 7px;
+  cursor: pointer;
+  transition: 0.5s all ease-in-out;
+}
+.input-container .links-container .link-container .action-btns:hover {
+  color: rgba(200, 0, 0, 0.7);
+}
+.input-container + .input-container {
+  margin-top: 20px;
+}
+.input-container.nomatch {
+  border-color: rgba(200, 0, 0, 0.7);
+  color: rgba(200, 0, 0, 0.7);
+}
+/* Split Editor */
+.split-editor {
+  display: flex;
+}
+.split-editor .split {
+  width: 50%;
+  flex: 1;
+  padding: 0 7px;
+}
+.split-editor .split .music-list .music-item {
+  display: flex;
+  background: #ffffff;
+  padding: 10px 7px;
+}
+.split-editor .split .music-list .music-item + .music-item {
+  margin-top: 5px;
+}
+.split-editor .split .music-list .music-item .music-icon {
+  background: #646464;
+  color: #ffffff;
+  margin-right: 20px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.split-editor .split .music-list .music-item .music-icon img {
+  width: 150%;
+  height: 150%;
+}
+.split-editor .split .music-list .music-item .music-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  font-family: 'Reenie Beanie', cursive;
+  cursor: pointer;
+  transition: 0.5s all ease-in-out;
+}
+.split-editor .split .music-list .music-item .music-title:hover {
+  color: #cd853f;
+}
+.split-editor .split .music-list .music-item .music-links-container {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  margin-left: 7px;
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon {
+  height: 25px;
+  width: 25px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #ffffff;
+  background: rgba(150, 150, 150, 0.9);
+  opacity: 0.5;
+  transition: 0.5s all ease-in-out;
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon + .link-icon {
+  margin-left: 7px;
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon.itunes {
+  background: rgba(105, 166, 249, 0.9);
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon.soundcloud {
+  background: rgba(255, 119, 0, 0.9);
+}
+.split-editor .split .music-list .music-item .music-links-container .link-icon.spinrilla {
+  background: rgba(70, 8, 86, 0.9);
 }

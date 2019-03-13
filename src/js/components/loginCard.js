@@ -25,7 +25,7 @@ class LoginCard extends Component{
             <div className="loginCard">
                  <h2>Please login in below to access the site editor</h2>
 
-                 <div className="input-container">
+                <div className="input-container">
                     <span>Email</span>
                     <input type="text" name="email" id="email" value={this.state.loginAttempt.email} onChange={(e) => this.handleTextChange(e,"email")} />    
                 </div>

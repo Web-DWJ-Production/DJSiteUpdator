@@ -784,6 +784,12 @@ html {
 .input-container .links-container .link-container .action-btns:hover {
   color: rgba(200, 0, 0, 0.7);
 }
+.input-container .links-container .link-container .action-btns.add {
+  margin-top: 10px;
+}
+.input-container .links-container .link-container .action-btns.add:hover {
+  color: rgba(0, 150, 0, 0.7);
+}
 .input-container + .input-container {
   margin-top: 20px;
 }
@@ -808,6 +814,9 @@ html {
 .split-editor .split .music-list .music-item + .music-item {
   margin-top: 5px;
 }
+.split-editor .split .music-list .music-item.new {
+  color: #009600;
+}
 .split-editor .split .music-list .music-item .music-icon {
   background: #646464;
   color: #ffffff;
@@ -824,6 +833,10 @@ html {
 .split-editor .split .music-list .music-item .music-icon img {
   width: 150%;
   height: 150%;
+}
+.split-editor .split .music-list .music-item .music-icon.save-icon {
+  background: rgba(0, 0, 0, 0);
+  color: #009600;
 }
 .split-editor .split .music-list .music-item .music-title {
   font-weight: bold;

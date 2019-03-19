@@ -167,6 +167,8 @@ body, html {
                 cursor: pointer;
                 transition: 0.5s all ease-in-out;
                 &:hover { color: rgba(200,0,0,0.7); }
+
+                &.add { margin-top: 10px; &:hover { color: rgba(0,150,0,0.7);} }
             }
         }
     }
@@ -192,6 +194,7 @@ body, html {
                 padding: 10px 7px;
                 &+.music-item { margin-top: 5px;}
 
+                &.new { color: rgba(0,150,0,1);}
                 .music-icon {
                     background: rgba(100,100,100,1);
                     color: rgba(255,255,255,1);
@@ -205,6 +208,8 @@ body, html {
                     justify-content: center;
                     overflow: hidden;
                     img{ width: 150%; height: 150%;}
+
+                    &.save-icon { background: rgba(0,0,0,0); color: rgba(0,150,0,1);}
                 }
                 .music-title {
                     font-weight: bold;

@@ -19,7 +19,7 @@ class Songs extends Component{
 
         this.state = {
             selectedId:null,
-            selectedItem:null,
+            selectedItem:{links:[]},
             linksList:["itunes","soundcloud","spinrilla","other"],
             songList:[
                 {"title":"Trap blues", "additionalInfo":"", "date":new Date("2017-11-20"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
@@ -37,6 +37,8 @@ class Songs extends Component{
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleLinkChange = this.handleLinkChange.bind(this);
         this.removeLink = this.removeLink.bind(this);
+        this.newSong = this.newSong.bind(this);
+        this.addLink = this.addLink.bind(this);
     }
 
     getLinkIcon(link, key){
@@ -126,6 +128,30 @@ class Songs extends Component{
         }
     }
 
+    newSong() {
+        var self = this;
+        try {
+            let tmpItem = Object.assign({}, {title:'', additionalInfo:'', links:[]});                
+            this.setState({selectedId:-1, selectedItem: tmpItem});
+        }
+        catch(ex){
+            console.log("Error adding new songs: ",ex);
+        }
+    }
+    addLink(){
+        var self = this;
+        try {
+            let tmpLink = Object.assign({}, {url:"", link:""});   
+            let tmpSong = this.state.selectedItem;
+            tmpSong.links.push(tmpLink); 
+
+            this.setState({selectedItem: tmpSong});
+        }
+        catch(ex){
+            console.log("Error adding new songs: ",ex);
+        }
+    }
+
     render(){  
         return(
             <div className="page-container songs">
@@ -133,6 +159,12 @@ class Songs extends Component{
                 <div className="split-editor">
                     <div className="song-selector split">                    
                         <div className="music-list">
+                            <div className="music-item new">
+                                <div className="music-icon save-icon">                                                    
+                                    <i className="fas fa-plus-circle"></i>
+                                </div>
+                                <div className="music-title" onClick={()=> this.newSong()}>Add Song</div>                                    
+                            </div>
                             {this.state.songList.map((song,i) => (
                                 <div key={i} className="music-item">
                                     <div className="music-icon">                                                    
@@ -150,7 +182,7 @@ class Songs extends Component{
                     </div>
                     <div className="song-editor split">                    
                         <p>Song Editor</p>
-                        {this.state.selectedItem && 
+                        {this.state.selectedId != null && 
                             <div className="editor-container">
                                 <div className="input-container">
                                     <span>Title</span>
@@ -178,7 +210,17 @@ class Songs extends Component{
                                                 <span className="action-btns" onClick={() => this.removeLink(i)}><i className="fas fa-minus-circle"></i></span>
                                             </div>                                            
                                         ))}
+                                        { this.state.selectedItem.links.length < 3 &&
+                                            <div className="link-container">
+                                                <div className="action-btns add" onClick={this.addLink}><i className="fas fa-link"></i><span>Add Download Link</span></div>
+                                            </div>
+                                        }
                                     </div>
+                                </div>
+
+                                <div className="ctrls">
+                                    <div className="ctrl-btn save"></div>
+                                    <div className="ctrl-btn delete"></div>
                                 </div>
                             </div>
                         }

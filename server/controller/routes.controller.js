@@ -3,6 +3,10 @@ var router = express.Router();
 var data = require('../services/data.service');
 var user = require('../services/user.service');
 
+/*** Songs ***/
+function getSongs(req, ret) { data.getSongs(req,ret); }
+function removeSong(req, res){ data.removeSong(req, res); }
+
 /*** Announcements  ***/
 /* get announcements */
 function getAnnouncements(req, res){ data.getAnnouncements(req, res); }
@@ -39,6 +43,9 @@ function removeUser(req, res){ user.removeUser(req, res); }
 /* Routes */
 router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
+
+router.get('/getSongs', getSongs);
+router.get('/removeSong', removeSong);
 
 /* Login */
 router.post('/validateUser', validateUser);

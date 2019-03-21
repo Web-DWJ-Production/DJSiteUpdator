@@ -39,6 +39,8 @@ class Songs extends Component{
         this.removeLink = this.removeLink.bind(this);
         this.newSong = this.newSong.bind(this);
         this.addLink = this.addLink.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.updateSong = this.updateSong.bind(this);
     }
 
     getLinkIcon(link, key){
@@ -56,12 +58,18 @@ class Songs extends Component{
 
     changeSelected(id){
         var self = this;
-        let tmpItem = Object.assign({}, this.state.songList[id]);
-        tmpItem.links = [];
-        this.state.songList[id].links.forEach(function(link) {
-            tmpItem.links.push(Object.assign({}, link));
-        });        
-        this.setState({selectedId:id, selectedItem: tmpItem});
+        if(id !== this.state.selectedId) {
+            var status = (this.state.selectedId !== null ? window.confirm("Are you sure you want to switch selected without saving?") : true);
+            
+            if(status){
+                let tmpItem = Object.assign({}, this.state.songList[id]);
+                tmpItem.links = [];
+                this.state.songList[id].links.forEach(function(link) {
+                    tmpItem.links.push(Object.assign({}, link));
+                });        
+                this.setState({selectedId:id, selectedItem: tmpItem});
+            }
+        }
     }
 
     handleDateChange(date, name){
@@ -128,11 +136,37 @@ class Songs extends Component{
         }
     }
 
+    validateForm(){
+        var self = this;
+        var errors = [];
+        try {            
+            var tmpItem = this.state.selectedItem;
+
+            if(tmpItem.title.length <= 0){
+                errors.push("Please Add Song Title");
+            }
+            if(!tmpItem.date || tmpItem.date.length <= 0){
+                errors.push("Please Add Song Release Date");
+            }
+        }
+        catch(ex){
+
+        }
+
+        return errors;
+    }
+
     newSong() {
         var self = this;
         try {
-            let tmpItem = Object.assign({}, {title:'', additionalInfo:'', links:[]});                
-            this.setState({selectedId:-1, selectedItem: tmpItem});
+            if(this.state.selectedId !== -1) {
+                var status = (this.state.selectedId !== null ? window.confirm("Are you sure you want to switch without saving?") : true);
+                
+                if(status){
+                    let tmpItem = Object.assign({}, {title:'', additionalInfo:'', links:[]});                
+                    self.setState({selectedId:-1, selectedItem: tmpItem});
+                }
+            }
         }
         catch(ex){
             console.log("Error adding new songs: ",ex);
@@ -149,6 +183,48 @@ class Songs extends Component{
         }
         catch(ex){
             console.log("Error adding new songs: ",ex);
+        }
+    }
+
+    handleInputChange(event){
+        var self = this;
+        try {
+            var tmpItem = this.state.selectedItem;
+            var file = event.target.files[0];
+
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                tmpItem.img = reader.result;         
+                self.setState({ selectedItem: tmpItem });
+            };
+        }
+        catch(ex){
+            console.log("Error changing image: ",ex);
+        }
+    }
+    
+    updateSong(type){
+        var self = this;
+        try {
+            if(type === "save"){
+                var errorStatus = this.validateForm();
+                if(errorStatus.length > 0){
+                    alert("Unable To Save: " + errorStatus.join(", "));
+                }   
+                else {
+
+                }    
+            }
+            else if(type === "delete"){
+                var status = window.confirm("Are you sure you want to delete the selected song?");
+                if(status){
+
+                }  
+            }
+        }
+        catch(ex){
+            console.log("Error updating song: ", ex);
         }
     }
 
@@ -180,10 +256,19 @@ class Songs extends Component{
                             ))}
                         </div>
                     </div>
-                    <div className="song-editor split">                    
-                        <p>Song Editor</p>
+                    <div className="song-editor split">                                            
                         {this.state.selectedId != null && 
                             <div className="editor-container">
+                                <div className="input-container">                              
+                                    <div className="cover-photo">
+                                        <div className="uploadContainer">
+                                            <input type="file" className="img-input" name="imgFile" id="imgFile" accept="image/*" onChange={this.handleInputChange} />    
+                                            <label className="img-lbl" htmlFor="imgFile"><div className="uploadImg"><i className="fas fa-file-import"></i></div></label>
+                                        </div>
+                                        {this.state.selectedItem.img ? <img src={this.state.selectedItem.img} className="cover-img" alt="" /> : <span>No Photo</span> }
+                                    </div>
+                                </div>
+
                                 <div className="input-container">
                                     <span>Title</span>
                                     <input type="text" name="title" id="title" value={this.state.selectedItem.title} onChange={(e) => this.handleTextChange(e)} />    
@@ -216,12 +301,12 @@ class Songs extends Component{
                                             </div>
                                         }
                                     </div>
-                                </div>
+                                </div> 
 
-                                <div className="ctrls">
-                                    <div className="ctrl-btn save"></div>
-                                    <div className="ctrl-btn delete"></div>
-                                </div>
+                                 <div className="ctrls">
+                                    <div className="ctrl-btn save" onClick={() => this.updateSong("save")}><i className="far fa-save"></i><span>Save Song</span></div>
+                                    <div className="ctrl-btn delete" onClick={() => this.updateSong("delete")}><i className="far fa-trash-alt"></i><span>Delete Song</span></div>
+                                </div>                               
                             </div>
                         }
                     </div>
@@ -230,8 +315,27 @@ class Songs extends Component{
         );
     }
     
+    getSongs(){
+        var self = this;
+        try {
+            fetch(baseUrl + "/api/getSongs")
+            .then(function(response) {
+                if (response.status >= 400) {throw new Error("Bad response from server"); }
+                return response.json();
+            })
+            .then(function(data) {
+                self.setState({ songList: data.results});
+            });
+        }
+        catch(ex){
+            console.log(" Error loading announcements: ",ex);
+        }
+    }
+
     componentDidMount(){
         this.props.setList();
+        this.getSongs();
+        //this.initSocket(this.props.currentUser);
     }
 }
 export default Songs;

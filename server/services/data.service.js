@@ -11,6 +11,61 @@ var activeStatus = false;
 var apiUrl = {}
 
 var data = {
+    getSongs: function(req,ret){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('songs');
+                    db.find({}, {useNewUrlParser: true}).sort({ date: 1 }).toArray(function(err, dbres){
+                        if(!dbres) { 
+                            response.errorMessage = "Unable get list";
+                        }
+						else {                                                       
+                            response.results = dbres;
+                        }
+                        res.status(200).json(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting songs: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    removeSong: function(req,ret){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            var deleteID = req.body.id;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('songs');
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error removing songs: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
     getAnnouncements:function(req,res){ 
         var response = {"errorMessage":null, "results":null};
 

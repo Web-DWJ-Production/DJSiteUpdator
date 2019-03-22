@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
+
 import DateTimePicker from 'react-datetime-picker';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -76,10 +77,8 @@ class Songs extends Component{
         var self = this;
         try {            
             var tmpItem = self.state.selectedItem;
-
-            if(name in tmpItem){
-                tmpItem[name] = date;
-            }
+            
+            tmpItem[name] = date;            
 
             this.setState({ selectedItem:tmpItem }, () => {
                 //self.validateCridentials();
@@ -175,7 +174,7 @@ class Songs extends Component{
     addLink(){
         var self = this;
         try {
-            let tmpLink = Object.assign({}, {url:"", link:""});   
+            let tmpLink = Object.assign({}, {url:"", type:""});   
             let tmpSong = this.state.selectedItem;
             tmpSong.links.push(tmpLink); 
 
@@ -213,7 +212,7 @@ class Songs extends Component{
                     alert("Unable To Save: " + errorStatus.join(", "));
                 }   
                 else {
-
+                    localSock.emit('update song', {"song": this.state.selectedItem});
                 }    
             }
             else if(type === "delete"){
@@ -315,6 +314,26 @@ class Songs extends Component{
         );
     }
     
+    initSocket(user){
+        var self = this;
+        try {
+            var socketQuery = "userid="+ user.email +"&token="+user._id;
+            localSock = socketIOClient(baseUrl, {query: socketQuery});
+            localSock.on('update songs',function(res) {
+                if(res.results){
+                    alert("Successfully updated announcement list");
+                    self.getAnnouncements();
+                }
+                else {
+                    alert("Error updating announcement list: ", res.errorMessage);
+                }
+            });
+        }
+        catch(ex){
+            console.log("Error init socket: ",ex);
+        }
+    }
+
     getSongs(){
         var self = this;
         try {
@@ -334,8 +353,8 @@ class Songs extends Component{
 
     componentDidMount(){
         this.props.setList();
-        this.getSongs();
-        //this.initSocket(this.props.currentUser);
+        //this.getSongs();
+        this.initSocket(this.props.currentUser);
     }
 }
 export default Songs;

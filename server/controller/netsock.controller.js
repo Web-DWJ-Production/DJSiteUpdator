@@ -19,5 +19,16 @@ module.exports = function (io) {
                 });
            }
         });
+
+        // socket direct connect
+        socket.on('update song', function (info) {
+            console.log("Got Request");
+            /* TODO: AUTHENTICATE USER */
+           if(info && info.song){
+                data.updateSong(info.song, function(retObj){
+                    io.to(socketId).emit('update song', retObj);
+                });
+           }
+        });
     });
 }

@@ -20,9 +20,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "base64-img": "^1.0.4",
     "bcrypt": "^3.0.4",
     "flickrapi": "^0.6.0",
     "globalize": "^1.4.0",
+    "is-base64": "^0.1.0",
     "moment": "^2.24.0",
     "mongodb": "^3.1.13",
     "react": "^16.8.1",

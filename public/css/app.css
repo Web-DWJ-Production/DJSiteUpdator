@@ -626,6 +626,9 @@
 .songs .input-container {
   width: 100%;
 }
+.albums .input-container {
+  width: 100%;
+}
 body,
 html {
   margin: 0px !important;

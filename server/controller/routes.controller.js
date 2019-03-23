@@ -7,6 +7,10 @@ var user = require('../services/user.service');
 function getSongs(req, ret) { data.getSongs(req,ret); }
 function removeSong(req, res){ data.removeSong(req, res); }
 
+/*** Albums ***/
+function getAlbums(req, ret) { data.getAlbums(req,ret); }
+function removeAlbum(req, res){ data.removeAlbum(req, res); }
+
 /*** Announcements  ***/
 /* get announcements */
 function getAnnouncements(req, res){ data.getAnnouncements(req, res); }
@@ -45,8 +49,10 @@ router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
 
 router.get('/getSongs', getSongs);
-router.get('/removeSong', removeSong);
+router.post('/removeSong', removeSong);
 
+router.get('/getAlbums', getAlbums);
+router.post('/removeAlbum', removeAlbum);
 /* Login */
 router.post('/validateUser', validateUser);
 router.post('/getResetQuestion', getResetQuestion);

@@ -6,8 +6,9 @@ import Sidebar from "react-sidebar";
 import DWJSideNav from './sideNav';
 import Home from './home';
 import UC from './UC';
-import Announcements from './announcements';
+//import Announcements from './announcements';
 import Songs from './songs';
+import Albums from './albums';
 import Users from './users';
 import NoMatch from './noMatch';
 import Settings from './settings';
@@ -17,7 +18,7 @@ const userKey = "dwjSystemUser_Gandhi3x";
 
 const routes = [
     { title:"Songs", path:"/songs", component:Songs},
-    { title:"Albums", path:"/albums", component:UC},
+    { title:"Albums", path:"/albums", component:Albums},
     { title:"Mixtapes", path:"/mixtapes", component:UC},
     { title:"Events", path:"/events", component:UC},
     { title:"Users", privilage:true, path:"/users", component:Users},

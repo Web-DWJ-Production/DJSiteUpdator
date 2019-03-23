@@ -10,7 +10,7 @@ module.exports = function (io) {
 
         console.log(" Socket Connection: ", userId);
 
-        // socket direct connect
+        // socket update announcements
         socket.on('update announcements', function (info) {
             /* TODO: AUTHENTICATE USER */
            if(info && info.list){
@@ -20,13 +20,22 @@ module.exports = function (io) {
            }
         });
 
-        // socket direct connect
+        // socket update song
         socket.on('update song', function (info) {
-            console.log("Got Request");
             /* TODO: AUTHENTICATE USER */
            if(info && info.song){
                 data.updateSong(info.song, function(retObj){
                     io.to(socketId).emit('update song', retObj);
+                });
+           }
+        });
+
+        // socket update album
+        socket.on('update album', function (info) {
+            /* TODO: AUTHENTICATE USER */
+           if(info && info.album){
+                data.updateAlbum(info.album, function(retObj){
+                    io.to(socketId).emit('update album', retObj);
                 });
            }
         });

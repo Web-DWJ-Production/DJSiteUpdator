@@ -12,22 +12,18 @@ import defaultImgAlt from '../assets/imgs/DefaultImgW.PNG';
 const baseUrl = "http://localhost:1777";
 var localSock = null;
 
-
-class Songs extends Component{
+class Albums extends Component{
     constructor(props) {
         super(props);
 
         this.state = {
             selectedId:null,
             selectedItem:{links:[]},
-            linksList:["itunes","soundcloud","spinrilla","other"],
-            songList:[
-                {"title":"Trap blues", "additionalInfo":"", "date":new Date("2017-11-20"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"That Way", "additionalInfo":"", "date":new Date("2017-08-18"), "links":[{"type":"itunes", "url":"https://itunes.apple.com/us/album/that-way-feat-sleep/id1276026221?i=1276026223"}], "img":""},
-                {"title":"Test Song 1", "additionalInfo":"", "date":new Date("2017-08-18"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"},{"type":"itunes", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"},{"type":"other", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 2", "additionalInfo":"", "date":new Date("2017-07-18"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 7", "additionalInfo":"beats by test", "date":new Date("2017-08-19"), "links":[{"type":"itunes", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 8", "additionalInfo":"ft. T. est", "date":new Date("2017-04-13"), "links":[{"type":"spinrilla", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""}
+            linksList:["itunes","soundcloud","other"],
+            albumList:[
+                {"title":"C.M.O.G.", "additionalInfo":"", "date":"2018-11-20", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null},
+                {"title":"Trap blues", "additionalInfo":"Beats by Drty Wahol", "date":"2019-01-20", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null},
+                {"title":"Never Mind Em", "additionalInfo":"", "date":"2018-09-25", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null}
             ]
         }
 
@@ -37,10 +33,10 @@ class Songs extends Component{
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleLinkChange = this.handleLinkChange.bind(this);
         this.removeLink = this.removeLink.bind(this);
-        this.newSong = this.newSong.bind(this);
+        this.newAlbum = this.newAlbum.bind(this);
         this.addLink = this.addLink.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.updateSong = this.updateSong.bind(this);
+        this.updateAlbum = this.updateAlbum.bind(this);
     }
 
     getLinkIcon(link, key){
@@ -49,8 +45,6 @@ class Songs extends Component{
                 return <a href={link.url} target="_blank" rel="noopener noreferrer" key={key} className="link-icon itunes"><i className="fab fa-apple"></i></a>
             case "soundcloud":
                 return <a href={link.url} target="_blank" rel="noopener noreferrer" key={key} className="link-icon soundcloud"><i className="fab fa-soundcloud"></i></a>
-            case "spinrilla":
-                return <a href={link.url} target="_blank" rel="noopener noreferrer" key={key} className="link-icon spinrilla"><i className="fas fa-compact-disc"></i></a>
             default:
                 return <a href={link.url} target="_blank" rel="noopener noreferrer" key={key} className="link-icon other"><i className="fas fa-music"></i></a>
         }
@@ -65,9 +59,9 @@ class Songs extends Component{
             var status = (this.state.selectedId !== null ? window.confirm("Are you sure you want to switch selected without saving?") : true);
             
             if(status){
-                let tmpItem = Object.assign({}, this.state.songList[id]);
+                let tmpItem = Object.assign({}, this.state.albumList[id]);
                 tmpItem.links = [];
-                this.state.songList[id].links.forEach(function(link) {
+                this.state.albumList[id].links.forEach(function(link) {
                     tmpItem.links.push(Object.assign({}, link));
                 });        
                 this.setState({selectedId:id, selectedItem: tmpItem});
@@ -142,10 +136,10 @@ class Songs extends Component{
             var tmpItem = this.state.selectedItem;
 
             if(tmpItem.title.length <= 0){
-                errors.push("Please Add Song Title");
+                errors.push("Please Add Album Title");
             }
             if(!tmpItem.date || tmpItem.date.length <= 0){
-                errors.push("Please Add Song Release Date");
+                errors.push("Please Add Album Release Date");
             }
         }
         catch(ex){
@@ -155,7 +149,7 @@ class Songs extends Component{
         return errors;
     }
 
-    newSong() {
+    newAlbum() {
         var self = this;
         try {
             if(this.state.selectedId !== -1) {
@@ -168,20 +162,20 @@ class Songs extends Component{
             }
         }
         catch(ex){
-            console.log("Error adding new songs: ",ex);
+            console.log("Error adding new album: ",ex);
         }
     }
     addLink(){
         var self = this;
         try {
             let tmpLink = Object.assign({}, {url:"", type:""});   
-            let tmpSong = this.state.selectedItem;
-            tmpSong.links.push(tmpLink); 
+            let tmpAlbum = this.state.selectedItem;
+            tmpAlbum.links.push(tmpLink); 
 
-            this.setState({selectedItem: tmpSong});
+            this.setState({selectedItem: tmpAlbum});
         }
         catch(ex){
-            console.log("Error adding new songs: ",ex);
+            console.log("Error adding new album: ",ex);
         }
     }
 
@@ -203,7 +197,7 @@ class Songs extends Component{
         }
     }
     
-    updateSong(type){
+    updateAlbum(type){
         var self = this;
         try {
             if(type === "save"){
@@ -212,21 +206,21 @@ class Songs extends Component{
                     alert("Unable To Save: " + errorStatus.join(", "));
                 }   
                 else {
-                    localSock.emit('update song', {"song": this.state.selectedItem});
+                    localSock.emit('update album', {"album": this.state.selectedItem});
                 }    
             }
             else if(type === "delete"){
-                var status = window.confirm("Are you sure you want to delete the selected song?");
+                var status = window.confirm("Are you sure you want to delete the selected album?");
                 if(status){
                     var tmpRemoved = self.state.selectedItem
                     var postData = {"id": tmpRemoved._id };
 
-                    axios.post(baseUrl + "/api/removeSong", postData, {'Content-Type': 'application/json'})
+                    axios.post(baseUrl + "/api/removeAlbum", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
-                                alert("Successfully deleted song"); 
+                                alert("Successfully deleted album"); 
                                 self.changeSelected(null);
-                                self.getSongs();
+                                self.getAlbums();
                             }
                             else {
                                 alert("Error deleting user: " + response.data.errorMessage);
@@ -236,14 +230,14 @@ class Songs extends Component{
             }
         }
         catch(ex){
-            console.log("Error updating song: ", ex);
+            console.log("Error updating albums: ", ex);
         }
     }
 
     render(){  
         return(
-            <div className="page-container songs">
-                <h1>Songs</h1>
+            <div className="page-container albums">
+                <h1>Albums</h1>
                 <div className="split-editor">
                     <div className="song-selector split">                    
                         <div className="music-list">
@@ -251,16 +245,16 @@ class Songs extends Component{
                                 <div className="music-icon save-icon">                                                    
                                     <i className="fas fa-plus-circle"></i>
                                 </div>
-                                <div className="music-title" onClick={()=> this.newSong()}>Add Song</div>                                    
+                                <div className="music-title" onClick={()=> this.newAlbum()}>Add Album</div>                                    
                             </div>
-                            {this.state.songList.map((song,i) => (
+                            {this.state.albumList.map((album,i) => (
                                 <div key={i} className="music-item">
                                     <div className="music-icon">                                                    
-                                        <img src={(song.img && song.img !== "" ? song.img : defaultImg)}/>
+                                        <img src={(album.img && album.img !== "" ? album.img : defaultImg)}/>
                                     </div>
-                                    <div className="music-title" onClick={()=> this.changeSelected(i)}>{song.title}</div>
+                                    <div className="music-title" onClick={()=> this.changeSelected(i)}>{album.title}</div>
                                     <div className="music-links-container">
-                                        {song.links.map((link,j) => (
+                                        {album.links.map((link,j) => (
                                             this.getLinkIcon(link,j)
                                         ))}
                                     </div>
@@ -317,8 +311,8 @@ class Songs extends Component{
                                 </div> 
 
                                  <div className="ctrls">
-                                    <div className="ctrl-btn save" onClick={() => this.updateSong("save")}><i className="far fa-save"></i><span>Save Song</span></div>
-                                    <div className="ctrl-btn delete" onClick={() => this.updateSong("delete")}><i className="far fa-trash-alt"></i><span>Delete Song</span></div>
+                                    <div className="ctrl-btn save" onClick={() => this.updateAlbum("save")}><i className="far fa-save"></i><span>Save Album</span></div>
+                                    <div className="ctrl-btn delete" onClick={() => this.updateAlbum("delete")}><i className="far fa-trash-alt"></i><span>Delete Album</span></div>
                                 </div>                               
                             </div>
                         }
@@ -333,15 +327,15 @@ class Songs extends Component{
         try {
             var socketQuery = "userid="+ user.email +"&token="+user._id;
             localSock = socketIOClient(baseUrl, {query: socketQuery});
-            localSock.on('update song',function(res) {
+            localSock.on('update album',function(res) {
                 console.log("ret",res);
                 if(res.results){
-                    alert("Successfully updated song");
+                    alert("Successfully updated album");
                     self.changeSelected(null);
-                    self.getSongs();
+                    self.getAlbums();
                 }
                 else {
-                    alert("Error updating song: ", res.errorMessage);
+                    alert("Error updating albums: ", res.errorMessage);
                 }
             });
         }
@@ -350,16 +344,16 @@ class Songs extends Component{
         }
     }
 
-    getSongs(){
+    getAlbums(){
         var self = this;
         try {
-            fetch(baseUrl + "/api/getSongs")
+            fetch(baseUrl + "/api/getAlbums")
             .then(function(response) {
                 if (response.status >= 400) {throw new Error("Bad response from server"); }
                 return response.json();
             })
             .then(function(data) {
-                self.setState({ songList: data.results});
+                self.setState({ albumList: data.results});
             });
         }
         catch(ex){
@@ -369,8 +363,9 @@ class Songs extends Component{
 
     componentDidMount(){
         this.props.setList();
-        this.getSongs();
-        this.initSocket(this.props.currentUser);
-    }
+        //this.getAlbums();
+        //this.initSocket(this.props.currentUser);
+    }    
 }
-export default Songs;
+
+export default Albums;

@@ -35,7 +35,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('songs');
-                    db.find({}, {useNewUrlParser: true}).sort({ date: 1 }).toArray(function(err, dbres){
+                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
                         if(!dbres) { 
                             response.errorMessage = "Unable get list";
                         }
@@ -55,7 +55,7 @@ var data = {
     },
     removeSong: function(req,res){
         var response = {"errorMessage":null, "results":null};
-
+       
         try {
             var deleteID = req.body.id;
 
@@ -65,7 +65,7 @@ var data = {
                     res.status(200).json(response);
                 }
                 else {
-                    const db = client.db(database.dbName).collection('songs');
+                    const db = client.db(database.dbName).collection('songs');                    
                     db.deleteOne({ "_id": ObjectId(deleteID) });
 
                     response.results = true;
@@ -100,9 +100,9 @@ var data = {
                         else {                   
                             /* Add New */
                             db.insert(item);
-                        }                    
-                        fs.unlinkSync(ret.old);
-                        response.results = true;
+                        }     
+                             
+                        response.results = true; 
                         callback(response);
                     });                        
                 }
@@ -110,6 +110,97 @@ var data = {
         }
         catch(ex){
             response.errorMessage = "[Error]: Error updating song: "+ex;
+            console.log(response.errorMessage);  
+            callback(response);         
+        }
+    },
+    /* Albums */
+    getAlbums: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('albums');
+                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
+                        if(!dbres) { 
+                            response.errorMessage = "Unable get list";
+                        }
+						else {                                                       
+                            response.results = dbres;
+                        }
+                        res.status(200).json(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting albums: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    removeAlbum: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+       
+        try {
+            var deleteID = req.body.id;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('albums');                    
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error removing albums: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    updateAlbum:function(item, callback){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    callback(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('albums');                  
+                    // clean Img                           
+                    cleanImg(item.img, function(ret){
+                        item.img = ret.new;
+                        if(item._id){
+                            /* Update */
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                        }
+                        else {                   
+                            /* Add New */
+                            db.insert(item);
+                        }     
+                             
+                        response.results = true; 
+                        callback(response);
+                    });                        
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating albums: "+ex;
             console.log(response.errorMessage);  
             callback(response);         
         }
@@ -246,6 +337,7 @@ function cleanImg(img, callback){
                         }, function(err, result1) {
                             // Return Img Url
                             ret.new = getImgUrl(result1);
+                            fs.unlinkSync(ret.old);
                             callback(ret);
                         });
                     }

@@ -629,6 +629,16 @@
 .albums .input-container {
   width: 100%;
 }
+.videos .input-container {
+  width: 100%;
+}
+.videos .input-container .cover-photo {
+  height: 200px;
+}
+.videos .input-container .readonly {
+  background: #c8c8c8;
+  color: #646464;
+}
 body,
 html {
   margin: 0px !important;

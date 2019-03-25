@@ -229,7 +229,7 @@ class Songs extends Component{
                                 self.getSongs();
                             }
                             else {
-                                alert("Error deleting user: " + response.data.errorMessage);
+                                alert("Error deleting song: " + response.data.errorMessage);
                             }
                     });  
                 }  

@@ -7,6 +7,7 @@ import DWJSideNav from './sideNav';
 import Home from './home';
 import UC from './UC';
 //import Announcements from './announcements';
+import Videos from './videos';
 import Songs from './songs';
 import Albums from './albums';
 import Users from './users';
@@ -19,6 +20,7 @@ const userKey = "dwjSystemUser_Gandhi3x";
 const routes = [
     { title:"Songs", path:"/songs", component:Songs},
     { title:"Albums", path:"/albums", component:Albums},
+    { title:"Videos", path:"/videos", component:Videos},
     { title:"Mixtapes", path:"/mixtapes", component:UC},
     { title:"Events", path:"/events", component:UC},
     { title:"Users", privilage:true, path:"/users", component:Users},

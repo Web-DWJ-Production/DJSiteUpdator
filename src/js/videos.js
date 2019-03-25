@@ -144,8 +144,8 @@ class Videos extends Component{
                 var status = (this.state.selectedId !== null ? window.confirm("Are you sure you want to switch without saving?") : true);
                 
                 if(status){
-                    let tmpItem = Object.assign({}, {title:'', text:'', urlcode:''});                
-                    self.setState({selectedId:-1, selectedItem: tmpItem});
+                    let tmpItem = Object.assign({}, {title:'', text:'', urlcode:'', date:(new Date()).toString()});                
+                    self.setState({selectedId:-1, selectedItem: tmpItem, selectedUrl:""});
                 }
             }
         }
@@ -219,7 +219,7 @@ class Videos extends Component{
                             <div className="editor-container">
                                 <div className="input-container">                              
                                     <div className="cover-photo">                                                                          
-                                        {this.state.selectedItem.urlcode ? <iframe src={"https://www.youtube.com/embed/"+this.state.selectedItem.urlcode} frameborder="0" height="100%" allowtransparency='true'/> : <span>No Video</span> }
+                                        {this.state.selectedItem.urlcode ? <iframe src={"https://www.youtube.com/embed/"+this.state.selectedItem.urlcode} frameBorder="0" height="100%" allowtransparency='true'/> : <span>No Video</span> }
                                     </div>
                                 </div>
 
@@ -237,7 +237,7 @@ class Videos extends Component{
                                 </div>
                                 <div className="input-container">
                                     <span>Url</span>
-                                    <input className="readonly" type="text" name="urlcode" id="urlcode" value={this.state.selectedItem.urlcode}  readonly/>
+                                    <input className="readonly" type="text" name="urlcode" id="urlcode" value={this.state.selectedItem.urlcode}  readOnly/>
                                     <input type="text" name="fullUrl" id="fullUrl" value={this.state.selectedUrl} onChange={(e) => this.handleUrlChange(e)} />    
                                 </div>
 

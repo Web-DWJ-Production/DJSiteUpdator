@@ -79,10 +79,11 @@ class Videos extends Component{
     validateUrl(url){
         var ret = false;
         try {
-            
+            var pattern1 = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
+            ret = url.match(pattern1);
         }
         catch(ex){
-
+            console.log("Error validating url: ",ex);
         }
         return ret;
     }
@@ -164,6 +165,20 @@ class Videos extends Component{
                 }   
                 else {
                     /* Ajax save video */
+                    var tmpSaved = self.state.selectedItem;
+                    var postData = {"video": tmpSaved };
+
+                    axios.post(baseUrl + "/api/updateVideo", postData, {'Content-Type': 'application/json'})
+                        .then(function(response) {                        
+                            if(response.data && response.data.results){                                
+                                alert("Successfully saved video"); 
+                                self.changeSelected(null);
+                                self.getVideos();
+                            }
+                            else {
+                                alert("Error saving video: " + response.data.errorMessage);
+                            }
+                    });  
                 }    
             }
             else if(type === "delete"){

@@ -245,7 +245,7 @@ class Announcements extends Component{
         }
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.props.setList();
         this.getAnnouncements();
         this.initSocket(this.props.currentUser);

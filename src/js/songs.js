@@ -21,14 +21,7 @@ class Songs extends Component{
             selectedId:null,
             selectedItem:{links:[]},
             linksList:["itunes","soundcloud","spinrilla","other"],
-            songList:[
-                {"title":"Trap blues", "additionalInfo":"", "date":new Date("2017-11-20"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"That Way", "additionalInfo":"", "date":new Date("2017-08-18"), "links":[{"type":"itunes", "url":"https://itunes.apple.com/us/album/that-way-feat-sleep/id1276026221?i=1276026223"}], "img":""},
-                {"title":"Test Song 1", "additionalInfo":"", "date":new Date("2017-08-18"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"},{"type":"itunes", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"},{"type":"other", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 2", "additionalInfo":"", "date":new Date("2017-07-18"), "links":[{"type":"soundcloud", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 7", "additionalInfo":"beats by test", "date":new Date("2017-08-19"), "links":[{"type":"itunes", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""},
-                {"title":"Test Song 8", "additionalInfo":"ft. T. est", "date":new Date("2017-04-13"), "links":[{"type":"spinrilla", "url":"https://soundcloud.com/gandhi3x/sets/trapblues"}], "img":""}
-            ]
+            songList:[]
         }
 
         this.changeSelected = this.changeSelected.bind(this);
@@ -75,14 +68,13 @@ class Songs extends Component{
         }
     }
 
-    handleDateChange(date, name){
+    handleDateChange(date){
         var self = this;
         try {            
-            var tmpItem = self.state.selectedItem;
-            
-            tmpItem[name] = date;            
+            var tmpItem = self.state.selectedItem;            
+            tmpItem.date = date;            
 
-            this.setState({ selectedItem:tmpItem }, () => {});
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
             console.log("Error with text change: ",ex);
@@ -291,7 +283,7 @@ class Songs extends Component{
                                 </div>
                                 <div className="input-container">
                                     <span>Release Date</span>                                                                    
-                                    <DatePicker onChange={(date) => this.handleDateChange(date, 'date')} selected={new Date(this.state.selectedItem.date)}/>
+                                    <DatePicker onChange={this.handleDateChange} selected={this.state.selectedItem.date}/>
                                 </div>
                                 <div className="input-container">
                                     <span>Download Links</span>                                

@@ -177,7 +177,7 @@ class Settings extends Component{
         return ret;
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.props.setList();
         this.getUser();
     }

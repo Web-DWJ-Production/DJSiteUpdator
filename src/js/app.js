@@ -6,7 +6,7 @@ import Sidebar from "react-sidebar";
 import DWJSideNav from './sideNav';
 import Home from './home';
 import UC from './UC';
-//import Announcements from './announcements';
+import Events from './events';
 import Videos from './videos';
 import Songs from './songs';
 import Albums from './albums';
@@ -22,7 +22,7 @@ const routes = [
     { title:"Albums", path:"/albums", component:Albums},
     { title:"Videos", path:"/videos", component:Videos},
     { title:"Mixtapes", path:"/mixtapes", component:UC},
-    { title:"Events", path:"/events", component:UC},
+    { title:"Events", path:"/events", component:Events},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];
@@ -33,7 +33,7 @@ class App extends Component{
         super(props);
         this.state = {
             redirectToHome:false,
-            user:{ name:"Test", _id:"12abc", email:"test@testmail.com"},
+            user:null,//{ name:"Test", _id:"12abc", email:"test@testmail.com"},
             sidebarOpen: false,
             routeList: []
         };   
@@ -130,10 +130,7 @@ class App extends Component{
     signOutUser() {
         this.setState({user: null}, ()=>{ sessionStorage.removeItem(userKey); });
     }
-    componentWillMount(){
-        this.getUser();
-    }
-
+    
     componentDidMount(){
         this.getUser();
     }

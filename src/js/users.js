@@ -141,7 +141,7 @@ class Users extends Component{
             console.log("Error loading user list");
         }
     }
-    componentWillMount(){
+    componentDidMount(){
         this.props.setList();
         this.loadUserList();
     }

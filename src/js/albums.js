@@ -11,6 +11,7 @@ import defaultImgAlt from '../assets/imgs/DefaultImgW.PNG';
 
 const baseUrl = "http://localhost:1777";
 var localSock = null;
+var tmpImg = null;
 
 class Albums extends Component{
     constructor(props) {
@@ -20,11 +21,7 @@ class Albums extends Component{
             selectedId:null,
             selectedItem:{links:[]},
             linksList:["itunes","soundcloud","other"],
-            albumList:[
-                {"title":"C.M.O.G.", "additionalInfo":"", "date":"2018-11-20", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null},
-                {"title":"Trap blues", "additionalInfo":"Beats by Drty Wahol", "date":"2019-01-20", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null},
-                {"title":"Never Mind Em", "additionalInfo":"", "date":"2018-09-25", "links":[{"type":"itunes", "url":""},{"type":"soundcloud", "url":""}], "img":null}
-            ]
+            albumList:[]
         }
 
         this.changeSelected = this.changeSelected.bind(this);
@@ -69,14 +66,15 @@ class Albums extends Component{
         }
     }
 
-    handleDateChange(date, name){
+    handleDateChange(date){
         var self = this;
         try {            
             var tmpItem = self.state.selectedItem;
-            
-            tmpItem[name] = date;            
+            //var date = event.target.name;
 
-            this.setState({ selectedItem:tmpItem }, () => {});
+            tmpItem.date = date;            
+
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
             console.log("Error with text change: ",ex);
@@ -92,9 +90,7 @@ class Albums extends Component{
                 tmpItem[name] = event.target.value;
             }
 
-            this.setState({ selectedItem:tmpItem }, () => {
-                //self.validateCridentials();
-            });
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
             console.log("Error with text change: ",ex);
@@ -106,9 +102,7 @@ class Albums extends Component{
             var type = event.target.name;
             var tmpItem = this.state.selectedItem;
             tmpItem.links[loc][type] = event.target.value;
-            this.setState({ selectedItem:tmpItem }, () => { 
-                //self.validQuestions();
-            });
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
             console.log("Error with link change: ",ex);
@@ -120,9 +114,7 @@ class Albums extends Component{
         try {           
             var tmpItem = this.state.selectedItem;
             tmpItem.links.splice(loc,1);
-            this.setState({ selectedItem:tmpItem }, () => { 
-                //self.validQuestions();
-            });
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
             console.log("Error with link change: ",ex);
@@ -285,7 +277,7 @@ class Albums extends Component{
                                 </div>
                                 <div className="input-container">
                                     <span>Release Date</span>                                                                    
-                                    <DatePicker onChange={(date) => this.handleDateChange(date, 'date')} selected={new Date(this.state.selectedItem.date)}/>
+                                    <DatePicker onChange={this.handleDateChange} selected={this.state.selectedItem.date}/>
                                 </div>
                                 <div className="input-container">
                                     <span>Download Links</span>                                
@@ -363,8 +355,8 @@ class Albums extends Component{
 
     componentDidMount(){
         this.props.setList();
-        //this.getAlbums();
-        //this.initSocket(this.props.currentUser);
+        this.getAlbums();
+        this.initSocket(this.props.currentUser);
     }    
 }
 

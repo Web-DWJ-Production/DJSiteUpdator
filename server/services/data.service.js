@@ -66,7 +66,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('songs');                    
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
+                    db.deleteOne({ "_id": deleteID });
 
                     response.results = true;
                     res.status(200).json(response);
@@ -95,7 +95,7 @@ var data = {
                         item.img = ret.new;
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {                   
                             /* Add New */
@@ -157,7 +157,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('albums');                    
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
+                    db.deleteOne({ "_id": deleteID });
 
                     response.results = true;
                     res.status(200).json(response);
@@ -186,7 +186,7 @@ var data = {
                         item.img = ret.new;
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {                   
                             /* Add New */
@@ -256,7 +256,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
+                    db.deleteOne({ "_id": deleteID });
 
                     response.results = true;
                     res.status(200).json(response);
@@ -284,7 +284,7 @@ var data = {
                     list.forEach(function(item){
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {
                             /* Add New */

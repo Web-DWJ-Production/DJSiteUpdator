@@ -32,9 +32,9 @@ require('./server/controller/netsock.controller.js')(io);
 
 
 // Catch all other routes and return the index file
-/*app.get('*', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build','index.html'));
-});*/
+});
 
 // start app
 //app.listen(port);

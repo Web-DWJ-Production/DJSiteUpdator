@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-const baseUrl = "http://localhost:1777";
-
 class Users extends Component{
     constructor(props) {
         super(props);
@@ -86,7 +84,7 @@ class Users extends Component{
             if(tmpList[loc].changes) {
                 var postData = {"user": tmpList[loc]};
 
-                axios.post(baseUrl + "/api/updateUser", postData, {'Content-Type': 'application/json'})
+                axios.post(this.props.baseUrl + "/api/updateUser", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {                        
                     var data = response.data;                    
                     alert((data.results ? "Successfully updated user" : "Error updating user: " + data.errorMessage));
@@ -109,7 +107,7 @@ class Users extends Component{
                     var tmpRemoved = tmpList.splice(loc,1);                    
                     var postData = {"id": tmpRemoved[0]._id };
 
-                    axios.post(baseUrl + "/api/removeUser", postData, {'Content-Type': 'application/json'})
+                    axios.post(this.props.baseUrl + "/api/removeUser", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
                                 self.setState({ userList:tmpList }, () => { alert("Successfully deleted user"); });
@@ -131,7 +129,7 @@ class Users extends Component{
         try {
             var postData = {"id": null };
 
-            axios.post(baseUrl + "/api/getUsers", postData, {'Content-Type': 'application/json'})
+            axios.post(this.props.baseUrl + "/api/getUsers", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {                        
                     var list = (response.data && response.data.results ? response.data.results : []);
                     self.setState({ userList: list });

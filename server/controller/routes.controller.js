@@ -11,6 +11,11 @@ function removeSong(req, res){ data.removeSong(req, res); }
 function getAlbums(req, ret) { data.getAlbums(req,ret); }
 function removeAlbum(req, res){ data.removeAlbum(req, res); }
 
+/*** Videos ***/
+function getVideos(req, ret) { data.getVideos(req,ret); }
+function removeVideo(req, res){ data.removeVideo(req, res); }
+function updateVideo(req, res){ data.updateVideo(req, res); }
+
 /*** Announcements  ***/
 /* get announcements */
 function getAnnouncements(req, res){ data.getAnnouncements(req, res); }
@@ -53,6 +58,10 @@ router.post('/removeSong', removeSong);
 
 router.get('/getAlbums', getAlbums);
 router.post('/removeAlbum', removeAlbum);
+
+router.get('/getVideos', getVideos);
+router.post('/removeVideo', removeVideo);
+router.post('/updateVideo', updateVideo);
 /* Login */
 router.post('/validateUser', validateUser);
 router.post('/getResetQuestion', getResetQuestion);

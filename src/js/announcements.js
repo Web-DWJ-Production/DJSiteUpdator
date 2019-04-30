@@ -8,6 +8,9 @@ import defaultImg from "../assets/imgs/amez_logo.png";
 
 /* Cards */
 import ImgCard from "./components/imgCard";
+/* Components */
+import SocketConnect from './components/socketConnect';
+
 const textSizes = ["paragraph","h1","h2"];
 const baseUrl = "http://localhost:1777";
 var localSock = null;
@@ -23,6 +26,8 @@ class Announcements extends Component{
             refreshItem:false,
             announcementList:[]
         }
+
+        this.socketDeclaration = this.socketDeclaration.bind(this);
 
         this.changeSelected = this.changeSelected.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,6 +45,8 @@ class Announcements extends Component{
     render(){  
         return(
             <div className="page-container announcements">
+                <SocketConnect baseUrl={baseUrl} user={this.props.currentUser} socketDeclaration={this.state.socketDeclaration}/>
+
                 <h1>Announcements Editor</h1>
                 <div className="announcement-container">
                     <div className="selected-announcement">
@@ -207,12 +214,10 @@ class Announcements extends Component{
             console.log("Error updating text: ", ex);
         }
     }
-
-    initSocket(user){
+    
+    socketDeclaration(localSock){
         var self = this;
         try {
-            var socketQuery = "userid="+ user.email +"&token="+user._id;
-            localSock = socketIOClient(baseUrl, {query: socketQuery});
             localSock.on('update announcements',function(res) {
                 if(res.results){
                     alert("Successfully updated announcement list");
@@ -224,10 +229,10 @@ class Announcements extends Component{
             });
         }
         catch(ex){
-            console.log("Error init socket: ",ex);
+            console.log("Error with socket declaration: ", ex);
         }
     }
-    
+
     getAnnouncements(){
         var self = this;
         try {
@@ -248,8 +253,6 @@ class Announcements extends Component{
     componentDidMount(){
         this.props.setList();
         this.getAnnouncements();
-        this.initSocket(this.props.currentUser);
-
         this.setState({selectedId:0});
     }
 }

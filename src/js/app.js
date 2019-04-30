@@ -15,14 +15,15 @@ import NoMatch from './noMatch';
 import Settings from './settings';
 import Login from './login';
 
+const baseUrl = "http://localhost:1777";
 const userKey = "dwjSystemUser_Gandhi3x";
 
 const routes = [
-    { title:"Songs", path:"/songs", component:Songs},
     { title:"Albums", path:"/albums", component:Albums},
+    { title:"Songs", path:"/songs", component:Songs},    
     { title:"Videos", path:"/videos", component:Videos},
     { title:"Mixtapes", path:"/mixtapes", component:UC},
-    { title:"Events", path:"/events", component:Events},
+    { title:"Events", path:"/events", component:UC},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];
@@ -32,8 +33,7 @@ class App extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            redirectToHome:false,
-            user:null,//{ name:"Test", _id:"12abc", email:"test@testmail.com"},
+            user:null,
             sidebarOpen: false,
             routeList: []
         };   
@@ -59,7 +59,7 @@ class App extends Component{
                 this.state.user === null ? 
                     <Redirect key={i} to="/login" from={route.path} />
                     :
-                    <Route key={i} exact path={route.path} render={props => ( <route.component {...props} routeList={this.state.routeList} setList={this.setRouteList} clearList={this.clearRouteList} currentUser={this.state.user} />)} />   
+                    <Route key={i} exact path={route.path} render={props => ( <route.component {...props} routeList={this.state.routeList} setList={this.setRouteList} clearList={this.clearRouteList} currentUser={this.state.user} baseUrl={baseUrl}/>)} />   
             ))
         )
     }
@@ -106,17 +106,18 @@ class App extends Component{
     setRouteList(){
         this.setState({ routeList: routes, sidebarOpen: false });
     }
+
     getUser(){
         var self = this;
         try {
             var sessionUser = sessionStorage.getItem(userKey);
             if(sessionUser){
                 var userResponse = JSON.parse(sessionUser);
-                self.setState({user: userResponse, redirectToHome: true});
+                self.setState({user: userResponse});
             }
         }
         catch(ex){
-            console.log("Error pulling sessiong user:",ex);
+            console.log("Error pulling session user:",ex);
         }        
     }
 

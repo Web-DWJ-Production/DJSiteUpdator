@@ -9,7 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import defaultImg from '../assets/imgs/DefaultImg.PNG';
 import defaultImgAlt from '../assets/imgs/DefaultImgW.PNG';
 
-const baseUrl = "http://localhost:1777";
+/* Components */
+import SocketConnect from './components/socketConnect';
+
 var localSock = null;
 
 
@@ -24,6 +26,7 @@ class Songs extends Component{
             songList:[]
         }
 
+        this.socketDeclaration = this.socketDeclaration.bind(this);
         this.changeSelected = this.changeSelected.bind(this);
         this.getLinkIcon = this.getLinkIcon.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
@@ -77,7 +80,7 @@ class Songs extends Component{
             this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
-            console.log("Error with text change: ",ex);
+            console.log("Error with date change: ",ex);
         }
     }
 
@@ -213,7 +216,7 @@ class Songs extends Component{
                     var tmpRemoved = self.state.selectedItem
                     var postData = {"id": tmpRemoved._id };
 
-                    axios.post(baseUrl + "/api/removeSong", postData, {'Content-Type': 'application/json'})
+                    axios.post(this.props.baseUrl + "/api/removeSong", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
                                 alert("Successfully deleted song"); 
@@ -235,6 +238,8 @@ class Songs extends Component{
     render(){  
         return(
             <div className="page-container songs">
+                <SocketConnect baseUrl={this.props.baseUrl} user={this.props.currentUser} socketDeclaration={this.socketDeclaration}/>
+
                 <h1>Songs</h1>
                 <div className="split-editor">
                     <div className="song-selector split">                    
@@ -320,12 +325,10 @@ class Songs extends Component{
         );
     }
     
-    initSocket(user){
+    socketDeclaration(tmpSock){
         var self = this;
         try {
-            var socketQuery = "userid="+ user.email +"&token="+user._id;
-            localSock = socketIOClient(baseUrl, {query: socketQuery});
-            localSock.on('update song',function(res) {
+            tmpSock.on('update song',function(res) {
                 console.log("ret",res);
                 if(res.results){
                     alert("Successfully updated song");
@@ -336,16 +339,17 @@ class Songs extends Component{
                     alert("Error updating song: ", res.errorMessage);
                 }
             });
+            localSock = tmpSock;
         }
         catch(ex){
-            console.log("Error init socket: ",ex);
+            console.log("Error with socket declaration: ", ex);
         }
     }
-
+    
     getSongs(){
         var self = this;
         try {
-            fetch(baseUrl + "/api/getSongs")
+            fetch(this.props.baseUrl + "/api/getSongs")
             .then(function(response) {
                 if (response.status >= 400) {throw new Error("Bad response from server"); }
                 return response.json();
@@ -362,7 +366,6 @@ class Songs extends Component{
     componentDidMount(){
         this.props.setList();
         this.getSongs();
-        this.initSocket(this.props.currentUser);
     }
 }
 export default Songs;

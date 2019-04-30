@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import quesFile from './components/secQues';
 
-const baseUrl = "http://localhost:1777";
-
 class Settings extends Component{
     constructor(props) {
         super(props);
@@ -86,7 +84,7 @@ class Settings extends Component{
             var uID = (this.props.currentUser ? this.props.currentUser._id : null);
             var postData = {"id": uID };
 
-            axios.post(baseUrl + "/api/getUsers", postData, {'Content-Type': 'application/json'})
+            axios.post(this.props.baseUrl + "/api/getUsers", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {                        
                     var user = (response.data && response.data.results ? response.data.results[0] : null);
                     self.setState({ user: user });
@@ -102,7 +100,7 @@ class Settings extends Component{
             if(this.state.changes) {
                 var postData = {"user": this.state.user};
 
-                axios.post(baseUrl + "/api/updateUser", postData, {'Content-Type': 'application/json'})
+                axios.post(this.props.baseUrl + "/api/updateUser", postData, {'Content-Type': 'application/json'})
                 .then(function(response) {                        
                     var data = response.data;
                     

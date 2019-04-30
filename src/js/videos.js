@@ -8,9 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import defaultImg from '../assets/imgs/DefaultImg.PNG';
 import defaultImgAlt from '../assets/imgs/DefaultImgW.PNG';
 
-const baseUrl = "http://localhost:1777";
-
-
 class Videos extends Component{
     constructor(props) {
         super(props);
@@ -19,11 +16,7 @@ class Videos extends Component{
             selectedId:null,
             selectedItem:{},
             selectedUrl:"",           
-            videoList:[
-                {"title":"Icey", "date":"2018-02-09","urlcode":"_DY9LEO2BA0","text":"Gandhi Ali Icey"},
-                {"title":"Ready", "date":"2018-01-11","urlcode":"cVl3G12ry2s","text":"Gandhi Ali Ready"},
-                {"title":"Bet It", "date":"2018-01-07","urlcode":"_CtbzItbu7Y","text":"Gandhi Ali Bet It"}
-            ]
+            videoList:[]
         }
 
         this.changeSelected = this.changeSelected.bind(this);       
@@ -88,17 +81,16 @@ class Videos extends Component{
         return ret;
     }
 
-    handleDateChange(date, name){
+    handleDateChange(date){
         var self = this;
         try {            
-            var tmpItem = self.state.selectedItem;
-            
-            tmpItem[name] = date;            
+            var tmpItem = self.state.selectedItem;            
+            tmpItem.date = date;            
 
-            this.setState({ selectedItem:tmpItem }, () => {});
+            this.setState({ selectedItem:tmpItem });
         }
         catch(ex){
-            console.log("Error with text change: ",ex);
+            console.log("Error with date change: ",ex);
         }
     }
 
@@ -145,7 +137,7 @@ class Videos extends Component{
                 var status = (this.state.selectedId !== null ? window.confirm("Are you sure you want to switch without saving?") : true);
                 
                 if(status){
-                    let tmpItem = Object.assign({}, {title:'', text:'', urlcode:'', date:(new Date()).toString()});                
+                    let tmpItem = Object.assign({}, {title:'', text:'', urlcode:''});                
                     self.setState({selectedId:-1, selectedItem: tmpItem, selectedUrl:""});
                 }
             }
@@ -168,7 +160,7 @@ class Videos extends Component{
                     var tmpSaved = self.state.selectedItem;
                     var postData = {"video": tmpSaved };
 
-                    axios.post(baseUrl + "/api/updateVideo", postData, {'Content-Type': 'application/json'})
+                    axios.post(this.props.baseUrl + "/api/updateVideo", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
                                 alert("Successfully saved video"); 
@@ -187,7 +179,7 @@ class Videos extends Component{
                     var tmpRemoved = self.state.selectedItem
                     var postData = {"id": tmpRemoved._id };
 
-                    axios.post(baseUrl + "/api/removeVideo", postData, {'Content-Type': 'application/json'})
+                    axios.post(this.props.baseUrl + "/api/removeVideo", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
                                 alert("Successfully deleted video"); 
@@ -248,7 +240,7 @@ class Videos extends Component{
                                 </div>
                                 <div className="input-container">
                                     <span>Release Date</span>                                                                    
-                                    <DatePicker onChange={(date) => this.handleDateChange(date, 'date')} selected={new Date(this.state.selectedItem.date)}/>
+                                    <DatePicker onChange={this.handleDateChange} selected={this.state.selectedItem.date}/>
                                 </div>
                                 <div className="input-container">
                                     <span>Url</span>
@@ -257,8 +249,8 @@ class Videos extends Component{
                                 </div>
 
                                  <div className="ctrls">
-                                    <div className="ctrl-btn save" onClick={() => this.updateSong("save")}><i className="far fa-save"></i><span>Save Song</span></div>
-                                    <div className="ctrl-btn delete" onClick={() => this.updateSong("delete")}><i className="far fa-trash-alt"></i><span>Delete Song</span></div>
+                                    <div className="ctrl-btn save" onClick={() => this.updateSong("save")}><i className="far fa-save"></i><span>Save Video</span></div>
+                                    <div className="ctrl-btn delete" onClick={() => this.updateSong("delete")}><i className="far fa-trash-alt"></i><span>Delete Video</span></div>
                                 </div>                               
                             </div>
                         }
@@ -271,13 +263,13 @@ class Videos extends Component{
     getVideos(){
         var self = this;
         try {
-            fetch(baseUrl + "/api/getVideos")
+            fetch(this.props.baseUrl + "/api/getVideos")
             .then(function(response) {
                 if (response.status >= 400) {throw new Error("Bad response from server"); }
                 return response.json();
             })
             .then(function(data) {
-                self.setState({ songList: data.results});
+                self.setState({ videoList: data.results});
             });
         }
         catch(ex){
@@ -287,7 +279,7 @@ class Videos extends Component{
 
     componentDidMount(){
         this.props.setList();
-        //this.getVideos();      
+        this.getVideos();      
     }
 }
 

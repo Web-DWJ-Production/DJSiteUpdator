@@ -6,6 +6,7 @@ import ForgotPasswordCard from './components/forgotPasswordCard';
 import ResetPassword from './components/resetPassword';
 import AddSecQuestions from './components/addSecQuestions';
 
+const userKey = "dwjSystemUser_Gandhi3x";
 
 class Login extends Component{
     constructor(props) {
@@ -21,6 +22,7 @@ class Login extends Component{
         this.changeCard = this.changeCard.bind(this);
         this.setTempEmail = this.setTempEmail.bind(this);
         this.toggleLoader = this.toggleLoader.bind(this);
+        this.checkUser = this.checkUser.bind(this);
     }
 
     render(){  
@@ -75,8 +77,22 @@ class Login extends Component{
         this.setState({ loader: status });
     }
 
+    checkUser(){
+        var self = this;
+        try {
+            var sessionUser = sessionStorage.getItem(userKey);
+            if(sessionUser){
+                self.setState({redirectToReferrer: true});
+            }
+        }
+        catch(ex){
+            console.log("Error pulling session user:",ex);
+        }        
+    }
+
     componentDidMount(){
         this.props.clearList();
+        this.checkUser();
         this.setState({ cardStatus: "", tmpEmail:"" });
     }
 }

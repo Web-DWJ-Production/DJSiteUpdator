@@ -89,13 +89,14 @@ var data = {
                     callback(response);
                 }
                 else {
-                    const db = client.db(database.dbName).collection('songs');                  
+                    const db = client.db(database.dbName).collection('songs');                 
                     // clean Img                           
                     cleanImg(item.img, function(ret){
                         item.img = ret.new;
+                        
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {                   
                             /* Add New */
@@ -186,7 +187,7 @@ var data = {
                         item.img = ret.new;
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {                   
                             /* Add New */
@@ -203,6 +204,96 @@ var data = {
             response.errorMessage = "[Error]: Error updating albums: "+ex;
             console.log(response.errorMessage);  
             callback(response);         
+        }
+    },
+    /* Videos */
+    getVideos: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('videos');
+                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
+                        if(!dbres) { 
+                            response.errorMessage = "Unable get list";
+                        }
+						else {                                                       
+                            response.results = dbres;
+                        }
+                        res.status(200).json(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting videos: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    removeVideo: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+       
+        try {
+            var deleteID = req.body.id;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('videos');                    
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error removing videos: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    updateVideo:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+
+        var video = req.body.video;
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.results = false;
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('videos');                           
+                   
+                    if(video._id ){
+                        /* Update */                                
+                        db.updateOne({ "_id": ObjectId(video._id) }, { $set: { title: video.title, date:video.date, urlcode:video.urlcode, text:video.text}}, {upsert: true, useNewUrlParser: true});
+                    }
+                    else {
+                        /* Add New */
+                        db.insert(video);
+                    }                            
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating video: " + ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
         }
     },
     /* Announcements */
@@ -284,7 +375,7 @@ var data = {
                     list.forEach(function(item){
                         if(item._id){
                             /* Update */
-                            db.updateOne({ "_id": item._id },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
                         }
                         else {
                             /* Add New */

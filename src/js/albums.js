@@ -319,10 +319,10 @@ class Albums extends Component{
         );
     }
     
-    socketDeclaration(localSock){
+    socketDeclaration(tmpSock){
         var self = this;
         try {
-            localSock.on('update album',function(res) {
+            tmpSock.on('update album',function(res) {
                 console.log("ret",res);
                 if(res.results){
                     alert("Successfully updated album");
@@ -333,6 +333,8 @@ class Albums extends Component{
                     alert("Error updating albums: ", res.errorMessage);
                 }
             });
+
+            localSock = tmpSock;
         }
         catch(ex){
             console.log("Error with socket declaration: ", ex);

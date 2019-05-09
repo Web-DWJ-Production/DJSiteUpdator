@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import quesFile from './secQues';
 
-const baseUrl = "http://localhost:1777";
+const baseUrl = "";
 
 class AddSecQuestions extends Component{
     constructor(props) {

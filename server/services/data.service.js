@@ -23,6 +23,98 @@ var FlickrOptions = {
  };
 
 var data = {
+    /* Events */
+    getEvents: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('events');
+                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
+                        if(!dbres) { 
+                            response.errorMessage = "Unable get list";
+                        }
+						else {                                                       
+                            response.results = dbres;
+                        }
+                        res.status(200).json(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting events: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    removeEvent: function(req,res){
+        var response = {"errorMessage":null, "results":null};
+       
+        try {
+            var deleteID = req.body.id;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('events');                    
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error removing events: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    updateEvent:function(item, callback){
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    callback(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('events');                 
+                    // clean Img                           
+                    cleanImg(item.img, function(ret){
+                        item.img = ret.new;
+                        
+                        if(item._id){
+                            /* Update */
+                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, location: item.location, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
+                        }
+                        else {                   
+                            /* Add New */
+                            db.insert(item);
+                        }     
+                             
+                        response.results = true; 
+                        callback(response);
+                    });                        
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating events: "+ex;
+            console.log(response.errorMessage);  
+            callback(response);         
+        }
+    },
     /* Songs */
     getSongs: function(req,res){
         var response = {"errorMessage":null, "results":null};
@@ -66,7 +158,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('songs');                    
-                    db.deleteOne({ "_id": deleteID });
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
 
                     response.results = true;
                     res.status(200).json(response);

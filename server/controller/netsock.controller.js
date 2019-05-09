@@ -20,6 +20,16 @@ module.exports = function (io) {
            }
         });
 
+        // socket update event
+        socket.on('update event', function (info) {
+            /* TODO: AUTHENTICATE USER */
+           if(info && info.event){
+                data.updateEvent(info.event, function(retObj){
+                    io.to(socketId).emit('update event', retObj);
+                });
+           }
+        });
+
         // socket update song
         socket.on('update song', function (info) {
             /* TODO: AUTHENTICATE USER */

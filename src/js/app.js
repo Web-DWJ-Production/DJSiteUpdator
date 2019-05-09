@@ -22,8 +22,7 @@ const routes = [
     { title:"Albums", path:"/albums", component:Albums},
     { title:"Songs", path:"/songs", component:Songs},    
     { title:"Videos", path:"/videos", component:Videos},
-    { title:"Mixtapes", path:"/mixtapes", component:UC},
-    { title:"Events", path:"/events", component:UC},
+    { title:"Events", path:"/events", component:Events},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];

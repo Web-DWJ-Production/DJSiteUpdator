@@ -108,10 +108,10 @@ class Announcements extends Component{
                     axios.post(baseUrl + "/api/removeAnnouncement", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
-                                self.setState({ announcementList:tmpList }, () => { alert("Successfully deleted user"); });
+                                self.setState({ announcementList:tmpList }, () => { alert("Successfully deleted announcement"); });
                             }
                             else {
-                                alert("Error deleting user: " + response.data.errorMessage);
+                                alert("Error deleting announcement: " + response.data.errorMessage);
                             }
                     });  
                 }

@@ -13,7 +13,7 @@ class Home extends Component{
         return(
             <div className="page-container home">
                 <h1>Welcome to the DWJ Site Editor</h1>
-                <h2>Gandhi3x</h2>
+                <h2>Clinton AMEZ</h2>
                 <div className="img-container"><img src={baseImg} /></div>
             </div>
         );

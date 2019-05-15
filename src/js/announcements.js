@@ -12,7 +12,6 @@ import ImgCard from "./components/imgCard";
 import SocketConnect from './components/socketConnect';
 
 const textSizes = ["paragraph","h1","h2"];
-const baseUrl = "http://localhost:1777";
 var localSock = null;
 
 class Announcements extends Component{
@@ -45,7 +44,7 @@ class Announcements extends Component{
     render(){  
         return(
             <div className="page-container announcements">
-                <SocketConnect baseUrl={baseUrl} user={this.props.currentUser} socketDeclaration={this.state.socketDeclaration}/>
+                <SocketConnect baseUrl={this.props.baseUrl} user={this.props.currentUser} socketDeclaration={this.socketDeclaration}/>
 
                 <h1>Announcements Editor</h1>
                 <div className="announcement-container">
@@ -105,7 +104,7 @@ class Announcements extends Component{
                     var tmpRemoved = tmpList.splice(self.state.selectedId,1);
                     var postData = {"id": tmpRemoved[0]._id };
 
-                    axios.post(baseUrl + "/api/removeAnnouncement", postData, {'Content-Type': 'application/json'})
+                    axios.post(self.props.baseUrl + "/api/removeAnnouncement", postData, {'Content-Type': 'application/json'})
                         .then(function(response) {                        
                             if(response.data && response.data.results){                                
                                 self.setState({ announcementList:tmpList }, () => { alert("Successfully deleted announcement"); });
@@ -215,9 +214,10 @@ class Announcements extends Component{
         }
     }
     
-    socketDeclaration(localSock){
+    socketDeclaration(tmpSock){
         var self = this;
         try {
+            localSock = tmpSock;
             localSock.on('update announcements',function(res) {
                 if(res.results){
                     alert("Successfully updated announcement list");
@@ -236,7 +236,7 @@ class Announcements extends Component{
     getAnnouncements(){
         var self = this;
         try {
-            fetch(baseUrl + "/api/getAnnouncements")
+            fetch(this.props.baseUrl + "/api/getAnnouncements")
             .then(function(response) {
                 if (response.status >= 400) {throw new Error("Bad response from server"); }
                 return response.json();

@@ -4,25 +4,21 @@ import Sidebar from "react-sidebar";
 
 /* Components */
 import DWJSideNav from './sideNav';
+import Announcements from './announcements';
 import Home from './home';
 import UC from './UC';
-import Events from './events';
-import Videos from './videos';
-import Songs from './songs';
-import Albums from './albums';
 import Users from './users';
 import NoMatch from './noMatch';
 import Settings from './settings';
 import Login from './login';
 
-const baseUrl = "";
-const userKey = "dwjSystemUser_Gandhi3x";
+const baseUrl = "http://localhost:1777";
+const userKey = "dwjSystemUser_ClintonAMEZ";
 
 const routes = [
-    { title:"Albums", path:"/albums", component:Albums},
-    { title:"Songs", path:"/songs", component:Songs},    
-    { title:"Videos", path:"/videos", component:Videos},
-    { title:"Events", path:"/events", component:Events},
+    { title:"Announcements", path:"/announcements", component:Announcements},
+    { title:"Photos", path:"/photos", component:UC},    
+    { title:"Calender", path:"/calender", component:UC},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];

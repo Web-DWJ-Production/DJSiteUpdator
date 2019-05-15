@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 
-const baseUrl = "";
+const baseUrl = "http://localhost:1777";
 
 class LoginCard extends Component{
     constructor(props) {

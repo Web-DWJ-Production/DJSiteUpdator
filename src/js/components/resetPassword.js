@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-const baseUrl = "";
+const baseUrl = "http://localhost:1777";
 
 class ResetPassword extends Component{
     constructor(props) {

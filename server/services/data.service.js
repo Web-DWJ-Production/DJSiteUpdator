@@ -23,371 +23,6 @@ var FlickrOptions = {
  };
 
 var data = {
-    /* Events */
-    getEvents: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('events');
-                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
-                        if(!dbres) { 
-                            response.errorMessage = "Unable get list";
-                        }
-						else {                                                       
-                            response.results = dbres;
-                        }
-                        res.status(200).json(response);
-                    });
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error getting events: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    removeEvent: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-       
-        try {
-            var deleteID = req.body.id;
-
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('events');                    
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
-
-                    response.results = true;
-                    res.status(200).json(response);
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error removing events: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    updateEvent:function(item, callback){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    callback(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('events');                 
-                    // clean Img                           
-                    cleanImg(item.img, function(ret){
-                        item.img = ret.new;
-                        
-                        if(item._id){
-                            /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, location: item.location, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
-                        }
-                        else {                   
-                            /* Add New */
-                            db.insert(item);
-                        }     
-                             
-                        response.results = true; 
-                        callback(response);
-                    });                        
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error updating events: "+ex;
-            console.log(response.errorMessage);  
-            callback(response);         
-        }
-    },
-    /* Songs */
-    getSongs: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('songs');
-                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
-                        if(!dbres) { 
-                            response.errorMessage = "Unable get list";
-                        }
-						else {                                                       
-                            response.results = dbres;
-                        }
-                        res.status(200).json(response);
-                    });
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error getting songs: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    removeSong: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-       
-        try {
-            var deleteID = req.body.id;
-
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('songs');                    
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
-
-                    response.results = true;
-                    res.status(200).json(response);
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error removing songs: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    updateSong:function(item, callback){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    callback(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('songs');                 
-                    // clean Img                           
-                    cleanImg(item.img, function(ret){
-                        item.img = ret.new;
-                        
-                        if(item._id){
-                            /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
-                        }
-                        else {                   
-                            /* Add New */
-                            db.insert(item);
-                        }     
-                             
-                        response.results = true; 
-                        callback(response);
-                    });                        
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error updating song: "+ex;
-            console.log(response.errorMessage);  
-            callback(response);         
-        }
-    },
-    /* Albums */
-    getAlbums: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('albums');
-                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
-                        if(!dbres) { 
-                            response.errorMessage = "Unable get list";
-                        }
-						else {                                                       
-                            response.results = dbres;
-                        }
-                        res.status(200).json(response);
-                    });
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error getting albums: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    removeAlbum: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-       
-        try {
-            var deleteID = req.body.id;
-
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('albums');                    
-                    db.deleteOne({ "_id": deleteID });
-
-                    response.results = true;
-                    res.status(200).json(response);
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error removing albums: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    updateAlbum:function(item, callback){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    callback(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('albums');                  
-                    // clean Img                           
-                    cleanImg(item.img, function(ret){
-                        item.img = ret.new;
-                        if(item._id){
-                            /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, additionalInfo: item.additionalInfo, date:item.date, links: item.links, img: item.img}}, {upsert: true, useNewUrlParser: true});
-                        }
-                        else {                   
-                            /* Add New */
-                            db.insert(item);
-                        }     
-                             
-                        response.results = true; 
-                        callback(response);
-                    });                        
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error updating albums: "+ex;
-            console.log(response.errorMessage);  
-            callback(response);         
-        }
-    },
-    /* Videos */
-    getVideos: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('videos');
-                    db.find({}, {useNewUrlParser: true}).sort({ date: -1 }).toArray(function(err, dbres){
-                        if(!dbres) { 
-                            response.errorMessage = "Unable get list";
-                        }
-						else {                                                       
-                            response.results = dbres;
-                        }
-                        res.status(200).json(response);
-                    });
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error getting videos: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    removeVideo: function(req,res){
-        var response = {"errorMessage":null, "results":null};
-       
-        try {
-            var deleteID = req.body.id;
-
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('videos');                    
-                    db.deleteOne({ "_id": ObjectId(deleteID) });
-
-                    response.results = true;
-                    res.status(200).json(response);
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error removing videos: "+ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
-    updateVideo:function(req,res){ 
-        var response = {"errorMessage":null, "results":null};
-
-        var video = req.body.video;
-        try {
-            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
-                if(err) {
-                    response.results = false;
-                    response.errorMessage = err;
-                    res.status(200).json(response);
-                }
-                else {
-                    const db = client.db(database.dbName).collection('videos');                           
-                   
-                    if(video._id ){
-                        /* Update */                                
-                        db.updateOne({ "_id": ObjectId(video._id) }, { $set: { title: video.title, date:video.date, urlcode:video.urlcode, text:video.text}}, {upsert: true, useNewUrlParser: true});
-                    }
-                    else {
-                        /* Add New */
-                        db.insert(video);
-                    }                            
-
-                    response.results = true;
-                    res.status(200).json(response);
-                }
-            });
-        }
-        catch(ex){
-            response.errorMessage = "[Error]: Error updating video: " + ex;
-            console.log(response.errorMessage);
-            res.status(200).json(response);
-        }
-    },
     /* Announcements */
     getAnnouncements:function(req,res){ 
         var response = {"errorMessage":null, "results":null};
@@ -405,15 +40,7 @@ var data = {
                             response.errorMessage = "Unable get list";
                         }
 						else {
-                            var list = [];
-                            dbres.forEach(function(item){
-                                if(item.mediaArray != null) {
-                                    item.media = item.mediaArray.join("");
-                                    item.mediaArray = null;
-                                }
-                                list.push(item);
-                            });
-                            response.results = list;
+                            response.results = dbres;
                         }
                         res.status(200).json(response);
                     });
@@ -439,7 +66,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
-                    db.deleteOne({ "_id": deleteID });
+                    db.deleteOne({ "_id": ObjectId(deleteID) });
 
                     response.results = true;
                     res.status(200).json(response);
@@ -465,14 +92,18 @@ var data = {
                     const db = client.db(database.dbName).collection('announcements');
                     
                     list.forEach(function(item){
-                        if(item._id){
-                            /* Update */
-                            db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
-                        }
-                        else {
-                            /* Add New */
-                            db.insert(item);
-                        }
+                        // clean Img                           
+                        cleanImg(item.media, "72157696977148262",function(ret){
+                            item.media = ret.new;
+                            if(item._id){
+                                /* Update */
+                                db.updateOne({ "_id": ObjectId(item._id) },  { $set: {title: item.title, lines: item.lines, order:item.order, media: item.media}}, {upsert: true, useNewUrlParser: true});
+                            }
+                            else {
+                                /* Add New */
+                                db.insert(item);
+                            }
+                        });
                     });
 
                     response.results = true;
@@ -491,7 +122,7 @@ var data = {
 module.exports = data;
 
 // Private Functions
-function cleanImg(img, callback){
+function cleanImg(img, folderId, callback){
     var ret = {new: img, old:null};
     try {
         if(isBase64(img, {mime: true})) {
@@ -505,7 +136,7 @@ function cleanImg(img, callback){
             // Upload Img to Flickr
             Flickr.authenticate(FlickrOptions, function(error, flickrAuth) {
                 var uploadOptions = { photos:[] };
-                uploadOptions.photos.push({title:"GAli-"+pid, photo: dest+"/"+pid+".jpg"});
+                uploadOptions.photos.push({title:"clinton-"+pid, photo: dest+"/"+pid+".jpg"});
                 Flickr.upload(uploadOptions, FlickrOptions, function(err, result) {
                     if(err) {
                         console.log(error);
@@ -513,16 +144,18 @@ function cleanImg(img, callback){
                     if(result.length){
                         // Get Flickr Img Url
                         var photo_id = result[0];
-                        flickrAuth.photos.getInfo({
-                            api_key: FlickrOptions.api_key,
-                            photo_id : photo_id,
-                            secret: FlickrOptions.secret
-                        }, function(err, result1) {
-                            // Return Img Url
-                            ret.new = getImgUrl(result1);
-                            fs.unlinkSync(ret.old);
-                            callback(ret);
-                        });
+                        flickrAuth.photosets.addPhoto({api_key: flickrAuth.api_key, photoset_id:folderId, photo_id: photo_id}, function(err, res0){
+                            flickrAuth.photos.getInfo({
+                                api_key: FlickrOptions.api_key,
+                                photo_id : photo_id,
+                                secret: FlickrOptions.secret
+                            }, function(err, result1) {
+                                // Return Img Url
+                                ret.new = getImgUrl(result1);
+                                fs.unlinkSync(ret.old);
+                                callback(ret);
+                            });
+                        });                        
                     }
                 });
             });

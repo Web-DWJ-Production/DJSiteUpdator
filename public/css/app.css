@@ -524,6 +524,7 @@
   height: 100%;
   font-size: 200px;
   background: rgba(255, 255, 255, 0.5);
+  z-index: 100;
 }
 .login .loader .fas {
   display: inline-block;

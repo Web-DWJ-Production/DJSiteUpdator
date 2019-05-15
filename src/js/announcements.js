@@ -22,11 +22,13 @@ class Announcements extends Component{
             maxList:7,
             selectedId:0,
             selectedItem:{},
+            toggleTimer:0,
             refreshItem:false,
             announcementList:[]
         }
 
         this.socketDeclaration = this.socketDeclaration.bind(this);
+        this.toggleLoaderMsg = this.toggleLoaderMsg.bind(this);
 
         this.changeSelected = this.changeSelected.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -45,6 +47,17 @@ class Announcements extends Component{
         return(
             <div className="page-container announcements">
                 <SocketConnect baseUrl={this.props.baseUrl} user={this.props.currentUser} socketDeclaration={this.socketDeclaration}/>
+                
+                {this.state.toggleTimer != 0 &&
+                    <div className="loadingBody">
+                        <div className="loadingMsg">
+                            <div className="loading-container">
+                                <h2>Please wait while upload completes</h2>
+                                <p>Upload will complete in {this.state.toggleTimer} second(s)</p>
+                            </div>
+                        </div>
+                    </div>
+                }
 
                 <h1>Announcements Editor</h1>
                 <div className="announcement-container">
@@ -220,8 +233,10 @@ class Announcements extends Component{
             localSock = tmpSock;
             localSock.on('update announcements',function(res) {
                 if(res.results){
-                    alert("Successfully updated announcement list");
-                    self.getAnnouncements();
+                    self.toggleLoaderMsg(25, function(){
+                        alert("Successfully updated announcement list");
+                        self.getAnnouncements();
+                    });                    
                 }
                 else {
                     alert("Error updating announcement list: ", res.errorMessage);
@@ -247,6 +262,27 @@ class Announcements extends Component{
         }
         catch(ex){
             console.log(" Error loading announcements: ",ex);
+        }
+    }
+
+    toggleLoaderMsg(time, callback){
+        var self = this;
+
+        try {
+            if(time <= 0){
+                callback();
+            }
+            else{
+                setTimeout(function(){
+                    self.setState({toggleTimer: time-1}, () =>{
+                        self.toggleLoaderMsg(time-1, callback);
+                    });                    
+                }, 1000);
+            }            
+        }
+        catch(ex){
+            console.log(" Error toggling loader: ", ex);
+            callback();
         }
     }
 

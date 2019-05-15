@@ -8,7 +8,7 @@ module.exports = function (io) {
         var ipAddress = socket.handshake.address;
         var socketId = socket.id;
 
-        console.log(" Socket Connection: ", userId);
+        //console.log(" Socket Connection: ", userId);
 
         // socket update announcements
         socket.on('update announcements', function (info) {

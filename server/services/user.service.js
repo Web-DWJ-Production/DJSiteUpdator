@@ -2,8 +2,8 @@ var path = require('path');
 var util = require('util');
 const bcrypt = require('bcrypt');
 var request = require('request');
+require('dotenv').config();
 
-var database = require('../config/database');
 var mongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
@@ -14,6 +14,12 @@ var retLocations = {
     forgotPassword:"forgotpwd",
     securityQuestions:"setQues"
 };
+
+var database = {
+    remoteUrl: process.env.REMOTEURL,
+    dbName: process.env.DBNAME,
+    mongoOptions: { connectTimeoutMS: 2000, socketTimeoutMS: 2000}
+}
 
 var apiUrl = {};
 

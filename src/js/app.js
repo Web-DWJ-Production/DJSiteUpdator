@@ -7,6 +7,7 @@ import DWJSideNav from './sideNav';
 import Announcements from './announcements';
 import Home from './home';
 import UC from './UC';
+import Ministries from './ministries';
 import Users from './users';
 import NoMatch from './noMatch';
 import Settings from './settings';
@@ -17,8 +18,7 @@ const userKey = "dwjSystemUser_ClintonAMEZ";
 
 const routes = [
     { title:"Announcements", path:"/announcements", component:Announcements},
-    { title:"Photos", path:"/photos", component:UC},    
-    { title:"Calender", path:"/calender", component:UC},
+    { title:"Ministries", path:"/ministries", component: Ministries},
     { title:"Users", privilage:true, path:"/users", component:Users},
     { title:"Settings", path:"/settings", component:Settings}
 ];

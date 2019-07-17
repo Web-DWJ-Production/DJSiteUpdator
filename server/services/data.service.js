@@ -4,10 +4,9 @@ var util = require('util');
 var request = require('request');
 var isBase64 = require('is-base64');
 var base64Img = require('base64-img');
-var flickrConfig = require("../config/flickrconfig.json");
 var Flickr = require("flickrapi");
 
-var database = require('../config/database');
+require('dotenv').config();
 var mongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
@@ -16,11 +15,17 @@ var activeStatus = false;
 var apiUrl = {}
 var FlickrOptions = { 
     permissions: "write", 
-    api_key: flickrConfig.token, 
-    secret: flickrConfig.secret,
-    access_token: flickrConfig.access_token,
-    access_token_secret: flickrConfig.access_token_secret 
+    api_key: process.env.FLICKR_TOKEN,
+    secret:process.env.FLICKR_SECRET,
+    access_token:process.env.FLICKR_ACCESS_TOKEN,
+    access_token_secret:process.env.FLICKR_ACCESS_TOKEN_SECRET 
  };
+
+ var database = {
+    remoteUrl: process.env.REMOTEURL,
+    dbName: process.env.DBNAME,
+    mongoOptions: { connectTimeoutMS: 2000, socketTimeoutMS: 2000}
+}
 
 var data = {
     /* Announcements */
@@ -116,6 +121,19 @@ var data = {
             console.log(response.errorMessage);  
             callback(response);         
         }
+    },
+    /* Ministries */
+    getMinistries:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            getTree(function(ret) { res.status(200).json(ret); });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting all ministries: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
     }
 }
 
@@ -184,4 +202,50 @@ function getImgUrl(retObj){
         console.log("Error Processing Img: ", ex);
     }
     return url;
+}
+
+/* Get Tree Ministry List */
+function getTree(callback){
+    var response = {"errorMessage":null, "results":null};
+
+    try {
+        mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+            if(err) {
+                response.errorMessage = err;
+                callback(response);
+            }
+            else {  
+                const db = client.db(database.dbName).collection('ministries');
+
+                db.find({active: activeStatus},{ projection:{_id:0, title: 1, section:1, subSections:1,logo:1}}).toArray(function(err, res){
+                    if(res == null || res == undefined) { response.errorMessage = "Unable get list";}
+                    else { response.results = buildTree(res);}
+
+                    callback(response);
+                });
+            }
+        });
+    }
+    catch(ex){
+        response.errorMessage = "Error getting Tree: " + ex;
+        callback(response);
+    }
+}
+
+function buildTree(list){
+    var self = this;
+    var ret = {};
+    try {
+        for(var i=0; i < list.length; i++){
+            if(!(list[i].section in ret)){
+                ret[list[i].section] = {"sectionTitle":list[i].section, "list":[]};
+            }
+            ret[list[i].section].list.push(list[i]);
+        }
+    }
+    catch(ex){
+        console.log("Error Building Tree: ",ex);
+    }
+    var retVal = (!ret ? {} : Object.values(ret).sort(function(a,b){ return a.list.length < b.list.length; }));
+    return retVal;
 }

@@ -4,7 +4,7 @@
   font-family: 'Just Another Hand';
   font-style: normal;
   font-weight: 400;
-  src: local('Just Another Hand Regular'), local('JustAnotherHand-Regular'), url(https://fonts.gstatic.com/s/justanotherhand/v10/845CNN4-AJyIGvIou-6yJKyptyOpOfr4DG0.ttf) format('truetype');
+  src: local('Just Another Hand Regular'), local('JustAnotherHand-Regular'), url(https://fonts.gstatic.com/s/justanotherhand/v11/845CNN4-AJyIGvIou-6yJKyptyOpOfr4DG0.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Montserrat';
@@ -22,7 +22,7 @@
   font-family: 'Reenie Beanie';
   font-style: normal;
   font-weight: 400;
-  src: local('Reenie Beanie'), local('ReenieBeanie'), url(https://fonts.gstatic.com/s/reeniebeanie/v9/z7NSdR76eDkaJKZJFkkjuvWxXPq1rg.ttf) format('truetype');
+  src: local('Reenie Beanie'), local('ReenieBeanie'), url(https://fonts.gstatic.com/s/reeniebeanie/v10/z7NSdR76eDkaJKZJFkkjuvWxXPq1rg.ttf) format('truetype');
 }
 /* Colors */
 .home {

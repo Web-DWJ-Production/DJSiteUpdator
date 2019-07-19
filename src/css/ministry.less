@@ -1,5 +1,7 @@
 .ministries {
+    height: 100%;
     .split-editor {
+        height: 90%;
         .song-selector {
             height: 100%;
             overflow-y:auto;
@@ -9,6 +11,22 @@
                 }
 
                 .ministry-item-list { padding: 5px;}
+            }
+        }
+
+        .song-editor {
+            width: 60%; 
+            flex: initial;
+            .editor-container {
+                .input-container { 
+                    width: 100%;
+                    &.check {
+                        width: 40%;
+                        border: none;
+                        flex-direction: row;
+                        span { margin-right: 10px; }
+                    }
+                }
             }
         }
     }

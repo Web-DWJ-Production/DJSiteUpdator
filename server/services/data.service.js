@@ -217,7 +217,7 @@ function getTree(callback){
             else {  
                 const db = client.db(database.dbName).collection('ministries');
 
-                db.find({active: activeStatus},{ projection:{_id:0, title: 1, section:1, subSections:1,logo:1}}).toArray(function(err, res){
+                db.find({active: activeStatus},{ projection:{}}).toArray(function(err, res){
                     if(res == null || res == undefined) { response.errorMessage = "Unable get list";}
                     else { response.results = buildTree(res);}
 

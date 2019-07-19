@@ -641,6 +641,12 @@
   background: #c8c8c8;
   color: #646464;
 }
+.ministries {
+  height: 100%;
+}
+.ministries .split-editor {
+  height: 90%;
+}
 .ministries .split-editor .song-selector {
   height: 100%;
   overflow-y: auto;
@@ -650,6 +656,21 @@
 }
 .ministries .split-editor .song-selector .ministry-section .ministry-item-list {
   padding: 5px;
+}
+.ministries .split-editor .song-editor {
+  width: 60%;
+  flex: initial;
+}
+.ministries .split-editor .song-editor .editor-container .input-container {
+  width: 100%;
+}
+.ministries .split-editor .song-editor .editor-container .input-container.check {
+  width: 40%;
+  border: none;
+  flex-direction: row;
+}
+.ministries .split-editor .song-editor .editor-container .input-container.check span {
+  margin-right: 10px;
 }
 body,
 html {

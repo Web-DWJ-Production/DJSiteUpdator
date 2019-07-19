@@ -641,6 +641,16 @@
   background: #c8c8c8;
   color: #646464;
 }
+.ministries .split-editor .song-selector {
+  height: 100%;
+  overflow-y: auto;
+}
+.ministries .split-editor .song-selector .ministry-section .sectionTitle {
+  border-bottom: 1px solid #000000;
+}
+.ministries .split-editor .song-selector .ministry-section .ministry-item-list {
+  padding: 5px;
+}
 body,
 html {
   margin: 0px !important;

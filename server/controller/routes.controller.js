@@ -14,6 +14,14 @@ function removeAnnouncement(req, res){ data.removeAnnouncement(req, res); }
 /* get ministries */
 function getMinistries(req, res){ data.getMinistries(req, res); }
 
+/*** Events ***/
+/* get events */
+function getEvents(req, res){ data.getEvents(req, res); }
+/* add event */
+/* update event */
+/* delete event */
+/* clean up old events */
+
 /*** Login  ***/
 /* validate User */
 function validateUser(req, res){ user.validateUser(req, res); }
@@ -45,6 +53,8 @@ router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
 
 router.get('/getMinistries', getMinistries);
+
+router.get('/getEvents', getEvents);
 
 /* Login */
 router.post('/validateUser', validateUser);

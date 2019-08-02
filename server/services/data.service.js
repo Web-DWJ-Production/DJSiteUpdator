@@ -134,12 +134,122 @@ var data = {
             console.log(response.errorMessage);
             res.status(200).json(response);
         }
+    },
+    /* Events */
+    getEvents: function(req, ret){
+        var response = {"errorMessage":null, "results":null};
+
+        /* { startDt, endDt, type: [single, weekly, biweekly, monthly], title, description, location } */
+        try {
+            var minDt = req.body.minDt;
+            var maxDt = req.body.maxDt;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    callback(response);
+                }
+                else {  
+                    const db = client.db(database.dbName).collection('events');
+                   
+                    // Query: (maxDt > e.startDt && ((minDt < e.endDt || e.endDt == null) || (e.type == "single" && (minDt < e.startDt && e.endDt == null))) )                                        
+                    db.find({ $and:[
+                            { startDt:{ $lt: new Date(maxDate)}},
+                            { $or: [
+                                { $or:[
+                                    { endDt: { $gt: new Date(minDt)}},
+                                    { endDt: null }
+                                ]},
+                                { $and:[
+                                    { type: "single"},
+                                    { $and: [
+                                        { startDt: { $gt: new Date(minDt)}},
+                                        { endDt: null }
+                                    ]}
+                                ]}
+                            ]}
+                        ]},{}).toArray(function(err, res){
+                        if(res == null || res == undefined) { response.errorMessage = "Unable get list";}
+                        else { 
+                            // build list
+                            response.results = buildEventList(res, maxDt);
+                        }
+        
+                        callback(response);
+                    });
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error getting all events: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
     }
 }
 
 module.exports = data;
 
 // Private Functions
+function buildEventList(list, maxDt){
+    var ret = [];
+    try {
+        list.forEach(function(item){
+            if(item.type == "single"){
+                ret.push(item);
+            }
+            else if(item.type == "weekly"){
+                // add 7 days and loop
+                ret = ret.concat(repeatDateBuilder(item, maxDt, 7, false));
+            }
+            else if(item.type == "biweekly"){
+                // add 14 days and loop
+                ret = ret.concat(repeatDateBuilder(item, maxDt, 14, false));
+            }
+            else if(item.type == "monthly"){
+                // add 1 to month and loop
+                ret = ret.concat(repeatDateBuilder(item, maxDt, 1, true));
+            }
+        });
+        ret.sort(function(a,b) { return new Date(a.startDt) - new Date(b.startDt); });
+    }
+    catch(ex){
+        console.log("Error building event list: ", ex);
+    }
+    return ret;
+}
+
+function repeatDateBuilder(item, maxDt, addtime, monthFlg){
+    var ret = [];
+    try {
+        var mxCmpDate = new Date(maxDt);
+        var dt = new Date(item.startDt);
+        do {
+            if(monthFlg){
+                if(dt.getMonth() == 11) {
+                    dt.setMonth(0);
+                    dt.setFullYear(dt.getFullYear() + 1);
+                }
+                else {
+                    dt.setMonth(dt.getMonth() + 1);
+                }
+            }
+            else {
+                dt.setDate(dt.getDate() + addtime);
+            }
+
+            // Add item to list
+            var tmpObj = Object.assign(item);
+            tmpObj.startDt = dt.toDateString();
+            ret.push(tmpObj);            
+        } while(dt < mxCmpDate);
+    }
+    catch(ex){
+        console.log("error with repeat builder: ",ex);
+    }
+    return ret;
+}
+
 function cleanImg(img, folderId, callback){
     var ret = {new: img, old:null};
     try {

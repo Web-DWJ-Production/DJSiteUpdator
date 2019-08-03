@@ -54,7 +54,7 @@ router.post('/removeAnnouncement', removeAnnouncement);
 
 router.get('/getMinistries', getMinistries);
 
-router.get('/getEvents', getEvents);
+router.post('/getEvents', getEvents);
 
 /* Login */
 router.post('/validateUser', validateUser);

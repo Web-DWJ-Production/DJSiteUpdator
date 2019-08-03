@@ -136,7 +136,7 @@ var data = {
         }
     },
     /* Events */
-    getEvents: function(req, ret){
+    getEvents: function(req, res){
         var response = {"errorMessage":null, "results":null};
 
         /* { startDt, endDt, type: [single, weekly, biweekly, monthly], title, description, location } */
@@ -151,31 +151,36 @@ var data = {
                 }
                 else {  
                     const db = client.db(database.dbName).collection('events');
-                   
-                    // Query: (maxDt > e.startDt && ((minDt < e.endDt || e.endDt == null) || (e.type == "single" && (minDt < e.startDt && e.endDt == null))) )                                        
+                                                                              
                     db.find({ $and:[
-                            { startDt:{ $lt: new Date(maxDate)}},
+                            { startDt:{ $lte: new Date(maxDt)}},
                             { $or: [
-                                { $or:[
-                                    { endDt: { $gt: new Date(minDt)}},
+                                { $and:[
+                                    { type: "single"},
+                                    { startDt: { $gte: new Date(minDt)}},
                                     { endDt: null }
                                 ]},
                                 { $and:[
                                     { type: "single"},
-                                    { $and: [
-                                        { startDt: { $gt: new Date(minDt)}},
+                                    { endDt: { $gte: new Date(minDt)}},
+                                    { endDt: {$ne: null }}
+                                ]},
+                                { $and:[
+                                    { type: {$ne:"single"}},
+                                    { $or:[
+                                        { endDt: { $gte: new Date(minDt)}},
                                         { endDt: null }
                                     ]}
                                 ]}
                             ]}
-                        ]},{}).toArray(function(err, res){
-                        if(res == null || res == undefined) { response.errorMessage = "Unable get list";}
+                        ]},{}).toArray(function(err, ret){
+
+                        if(ret == null || ret == undefined) { response.errorMessage = "Unable get list";}
                         else { 
                             // build list
-                            response.results = buildEventList(res, maxDt);
+                            response.results = buildEventList(ret, maxDt);
                         }
-        
-                        callback(response);
+                        res.status(200).json(response);
                     });
                 }
             });
@@ -239,8 +244,8 @@ function repeatDateBuilder(item, maxDt, addtime, monthFlg){
             }
 
             // Add item to list
-            var tmpObj = Object.assign(item);
-            tmpObj.startDt = dt.toDateString();
+            var tmpObj = JSON.parse(JSON.stringify(item));
+            tmpObj.startDt = dt.toISOString();
             ret.push(tmpObj);            
         } while(dt < mxCmpDate);
     }

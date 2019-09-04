@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import quesFile from './secQues';
 
-const baseUrl = "http://localhost:1777";
+//const baseUrl = "http://localhost:1777";
+const baseUrl = "";
 
 class ForgotPasswordCard extends Component{
     constructor(props) {

@@ -13,7 +13,8 @@ import NoMatch from './noMatch';
 import Settings from './settings';
 import Login from './login';
 
-const baseUrl = "http://localhost:1777";
+//const baseUrl = "http://localhost:1777";
+const baseUrl = "";
 const userKey = "dwjSystemUser_ClintonAMEZ";
 
 const routes = [

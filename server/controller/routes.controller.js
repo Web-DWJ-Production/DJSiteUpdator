@@ -1,7 +1,35 @@
 var express = require('express');
+const multer = require('multer');
 var router = express.Router();
 var data = require('../services/data.service');
 var user = require('../services/user.service');
+
+/* IMG STORAGE */
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        // rejects storing a file
+        cb(null, false);
+    }
+}
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+});
 
 /*** Announcements  ***/
 /* get announcements */
@@ -54,6 +82,9 @@ function removeUser(req, res){ user.removeUser(req, res); }
 /* Routes */
 router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
+router.get('/updateAnnouncement', upload.single('imageData'), function (req, res, next) {
+    data.updateAnnouncement(req, res, next);
+});
 
 router.get('/getMinistries', getMinistries);
 router.post('/updateMinistry', updateMinistry);

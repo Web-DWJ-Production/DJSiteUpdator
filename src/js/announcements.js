@@ -97,9 +97,24 @@ class Announcements extends Component{
         var self = this;
         try {
             var tmpList = self.state.announcementList;
+            tmpList.forEach(function(element,index){ element.order = index+1; });           
+            var tmpSelected = tmpList[self.state.selectedId];
 
-            tmpList.forEach(function(element,index){ element.order = index+1;  });
-            localSock.emit('update announcements', {"list": tmpList});
+            let imageFormObj = new FormData();
+            imageFormObj.append("imageName", "multer-image-" + Date.now());
+            imageFormObj.append("imageData", tmpSelected.imageData);
+            // Image Data
+            imageFormObj.append("_id", tmpSelected._id);
+            imageFormObj.append("title", tmpSelected.title);
+            imageFormObj.append("lines", tmpSelected.lines);
+            imageFormObj.append("order", tmpSelected.order);
+            imageFormObj.append("type", tmpSelected.type);
+
+            //localSock.emit('update announcements', {"list": tmpList});
+            axios.post(self.props.baseUrl + "/api/updateAnnouncement", imageFormObj)
+                .then(function(response) {                        
+                    console.log(response);
+                });  
         }
         catch(ex){
             console.log(" Error saving announcements: ", ex);
@@ -176,6 +191,7 @@ class Announcements extends Component{
         try {
             var tmpList = this.state.announcementList;
             var file = event.target.files[0];
+            tmpList[self.state.selectedId].imageData = file;
 
             let reader = new FileReader();
             reader.readAsDataURL(file);

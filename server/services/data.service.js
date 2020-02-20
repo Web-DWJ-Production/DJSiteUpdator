@@ -87,6 +87,48 @@ var data = {
             res.status(200).json(response);
         }
     },
+    updateAnnouncement:function(req, res, next){
+        var response = {"errorMessage":null, "results":false};
+        // { imageName, title, lines, order, type}
+        try {
+            /* 
+            *   Check If Item is new
+            *   If New Upload Img and data
+            *   Else Check if Img is new
+            *   If so Upload Img and save data
+            *   Else Update data
+            */
+           mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){ 
+                if(err) {
+                    response.errorMessage = err;
+                    res.status(200).json(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('announcements');
+                    if(!item._id){ 
+                        const newImage = {
+                            imageName: req.body.imageName,
+                            imageData: req.file.path
+                        };
+
+                        uploadImg(newImage, {}, function(upRet){
+                            response.results = upRet;
+                            res.status(200).json(response);
+                        });                        
+                    }
+                    else {
+
+                    }
+                }
+           });
+
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating announcement: "+ex;
+            console.log(response.errorMessage); 
+            res.status(200).json(response);
+        }
+    },
     updateAnnouncements:function(list, callback){
         var response = {"errorMessage":null, "results":null};
 
@@ -301,6 +343,19 @@ function repeatDateBuilder(item, maxDt, addtime, monthFlg){
         console.log("error with repeat builder: ",ex);
     }
     return ret;
+}
+
+function uploadImg(newImage, imgData, callback){
+    try {
+        newImage.save().then((result) => {
+            console.log(result);
+            callback(true);
+        });
+    }
+    catch(ex){
+        console.log("Error uploading Img: ",ex);
+        callback(false);
+    }
 }
 
 function cleanImg(img, folderId, callback){

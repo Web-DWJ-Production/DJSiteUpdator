@@ -17,6 +17,8 @@
         .song-editor {
             width: 60%; 
             flex: initial;
+            height: 100%;
+            overflow-y:auto;
             .editor-container {
                 .input-container { 
                     width: 100%;
@@ -28,6 +30,71 @@
                     }
                 }
             }
+        }
+    }
+
+    .leadership-list {
+        margin-top: 10px;
+
+        .ctrlBtn {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+            border-radius: 50%;
+            background: rgba(0,100,0,1);
+            color: rgba(255,255,255,1);
+            text-align: center;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            float: right;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: 0.5s all ease-in-out;
+
+            &.addBtn { background: rgba(0,100,0,1); }
+            &.removeBtn { background: rgba(100,0,0,1);}
+            &:hover { opacity: 0.7;}
+        }
+
+        h2 { margin-bottom: 30px; }
+        .leadership-item {
+            position: relative;
+            padding: 7px;
+            border: 2px solid rgba(0,0,0,1);
+            border-radius: 7px;
+            margin: 0px 7px 7px 0px;
+
+            .list-input-container {
+                display: flex;
+                flex-direction: row;
+                input { margin-left: 7px; flex: 1; }
+            }
+
+            .ctrlBtn { position: absolute; top: -15px; right: 10px; margin: 0px; }
+        }
+    }
+
+    .ctrlCards {
+        position: absolute;
+        display: inline-flex;
+        top: 30px;
+        right: 5%;
+        flex-direction: column;
+        .ctrlCard {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            color: rgba(255,255,255,1);
+            border-radius: 50%;
+            padding: 7px;
+            opacity: 0.4;
+            cursor: pointer;
+            transition: 0.5s all ease-in-out;
+            &+.ctrlCard { margin-top: 20px; }
+            &:hover { opacity: 1;}              
+            &.saveCard { background: rgba(0,100,0,1);}
         }
     }
 }

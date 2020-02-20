@@ -14,6 +14,9 @@ function removeAnnouncement(req, res){ data.removeAnnouncement(req, res); }
 /* get ministries */
 function getMinistries(req, res){ data.getMinistries(req, res); }
 
+/* update Minstry */
+function updateMinistry(req, res){ data.updateMinistry(req, res); }
+
 /*** Events ***/
 /* get events */
 function getEvents(req, res){ data.getEvents(req, res); }
@@ -53,6 +56,7 @@ router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
 
 router.get('/getMinistries', getMinistries);
+router.post('/updateMinistry', updateMinistry);
 
 router.post('/getEvents', getEvents);
 

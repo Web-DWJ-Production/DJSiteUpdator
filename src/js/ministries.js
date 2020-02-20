@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import defaultImg from "../assets/imgs/amez_logo.png";
 
@@ -9,20 +10,29 @@ class Ministries extends Component{
         this.state = {
             selectedId:null,
             sectionId:null,
-            selectedItem:{ leadership:[], subSections:[], activities:[],goals:[],gallery:[]},
+            selectedItem:{ leadership:[], subSections:[], activities:[],goals:[],gallery:[], spotlight: false, active:false},
             ministryList: []
         }
 
         this.loadMinistries = this.loadMinistries.bind(this);
         this.changeSelected = this.changeSelected.bind(this);
         this.pushArrays = this.pushArrays.bind(this);
+        this.addLeader = this.addLeader.bind(this);
+        this.removeLeader = this.removeLeader.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.handleLeaderTextChange = this.handleLeaderTextChange.bind(this);
+        this.updateMinistry = this.updateMinistry.bind(this);
     }
 
     render(){  
         return(
             <div className="page-container ministries">
                 <h1>Ministries</h1>
+                {(this.state.selectedItem && this.state.selectedItem.title &&                                     
+                    <span className="ctrlCards">
+                        <div className="ctrlCard saveCard" onClick={this.updateMinistry}><i className="far fa-save" /></div>
+                    </span>
+                )}
 
                 <div className="split-editor">
                     <div className="song-selector split">
@@ -82,6 +92,31 @@ class Ministries extends Component{
                                     <span>Section</span>
                                     <input type="text" name="section" id="section" value={this.state.selectedItem.section} readOnly={true} />    
                                 </div>
+
+                                <div className="leadership-list">
+                                    <h2>
+                                        <span>Leadership</span>                                        
+                                        <div className="ctrlBtn addBtn" onClick={this.addLeader}><i className="fas fa-user-plus"/></div>                                       
+                                    </h2> 
+
+                                    {this.state.selectedItem.leadership.map((item,i) =>
+                                        <div className="leadership-item"  key={i}>
+                                            <div className="list-input-container">
+                                                <span>Name</span>
+                                                <input type="text" name="name" value={item.name}  onChange={(e) => this.handleLeaderTextChange(e,i)}/>    
+                                            </div>
+                                            <div className="list-input-container">
+                                                <span>Title</span>
+                                                <input type="text" name="title" value={item.title}  onChange={(e) => this.handleLeaderTextChange(e,i)}/>    
+                                            </div>
+                                            <div className="list-input-container">
+                                                <span>Email</span>
+                                                <input type="text" name="email" value={item.email}  onChange={(e) => this.handleLeaderTextChange(e,i)}/>    
+                                            </div>
+                                            <div className="ctrlBtn removeBtn" onClick={() => this.removeLeader(i)}><i className="fas fa-user-times"/></div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         }
                     </div>
@@ -109,6 +144,44 @@ class Ministries extends Component{
         }
         catch(ex){
             console.log("Error with text change: ",ex);
+        }
+    }
+
+    handleLeaderTextChange(event,i){
+        try {
+            var name = event.target.name;
+            var tmpItem = this.state.selectedItem;
+            if(tmpItem.leadership.length > 0 && name in tmpItem.leadership[i]){
+                tmpItem.leadership[i][name] = event.target.value;
+            }
+
+            this.setState({ selectedItem:tmpItem });
+        }
+        catch(ex){
+            console.log("Error with leader text change: ",ex);
+        }
+    }
+
+    addLeader(){
+        try {
+            var tmpItem = this.state.selectedItem;
+            tmpItem.leadership.push({"name":"","title":"","email":""});
+            this.setState({ selectedItem:tmpItem });
+        }
+        catch(ex){
+            console.log("Error adding leader: ",ex)
+        }
+    }
+
+    removeLeader(i){
+        try {
+            var tmpItem = this.state.selectedItem;
+            tmpItem.leadership.splice(i,1);
+
+            this.setState({ selectedItem: tmpItem });
+        }
+        catch(ex){
+            console.log("Error removing leader: ",ex)
         }
     }
 
@@ -161,6 +234,29 @@ class Ministries extends Component{
         }
         catch(ex){
             console.log(" Error loading announcements: ",ex);
+        }
+    }
+
+    updateMinistry(){
+        var self = this;
+        try {
+            var postData = { ministry: this.state.selectedItem };
+            axios.post(this.props.baseUrl + "/api/updateMinistry", postData, {'Content-Type': 'application/json'})
+                .then(function(response) {                        
+                    var data = response.data;      
+                    if(data.results) {
+                        var sid = self.state.sectionId;
+                        var id = self.state.selectedId;
+                        var tmpList = self.state.ministryList;
+                        tmpList[sid].list[id] = self.state.selectedItem;
+                        self.setState({ ministryList: tmpList });
+                    }  
+
+                    alert((data.results ? "Successfully updated minstry" : "Error updating minstry: " + data.errorMessage));
+                }); 
+        }
+        catch(ex){
+            console.log("Error updating ministry: ",ex)
         }
     }
 }

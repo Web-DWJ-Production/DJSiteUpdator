@@ -47,6 +47,8 @@ var data = {
 						else {
                             response.results = dbres;
                         }
+
+                        client.close();
                         res.status(200).json(response);
                     });
                 }
@@ -74,6 +76,7 @@ var data = {
                     db.deleteOne({ "_id": ObjectId(deleteID) });
 
                     response.results = true;
+                    client.close();
                     res.status(200).json(response);
                 }
             });
@@ -108,6 +111,7 @@ var data = {
                                 /* Add New */
                                 db.insert(item);
                             }
+                            client.close();
                         });
                     });
 
@@ -131,6 +135,49 @@ var data = {
         }
         catch(ex){
             response.errorMessage = "[Error]: Error getting all ministries: "+ex;
+            console.log(response.errorMessage);
+            res.status(200).json(response);
+        }
+    },
+    updateMinistry:function(req,res){ 
+        var response = {"errorMessage":null, "results":null};
+
+        try {
+            var updateItem = req.body.ministry;
+
+            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){
+                if(err) {
+                    response.errorMessage = err;
+                    callback(response);
+                }
+                else {
+                    const db = client.db(database.dbName).collection('ministries');            
+                    if(updateItem._id){
+                        /* Update */
+                        db.updateOne({ "_id": ObjectId(updateItem._id) },  { 
+                            $set: {
+                                title: updateItem.title, 
+                                active: updateItem.active,
+                                website: updateItem.website,
+                                leadership: updateItem.leadership,
+                                mission: updateItem.mission,
+                                memebership: updateItem.membership,
+                                section: updateItem.section,
+                                spotlight: updateItem.spotlight
+                            }}, {upsert: true, useNewUrlParser: true});
+                        client.close();
+                    }
+                    else {
+                        response.errorMessage = "[Error]: Error Id Does Not Exist";
+                    }
+
+                    response.results = true;
+                    res.status(200).json(response);
+                }
+            });
+        }
+        catch(ex){
+            response.errorMessage = "[Error]: Error updating ministry: "+ex;
             console.log(response.errorMessage);
             res.status(200).json(response);
         }
@@ -180,6 +227,7 @@ var data = {
                             // build list
                             response.results = buildEventList(ret, maxDt);
                         }
+                        client.close();
                         res.status(200).json(response);
                     });
                 }
@@ -335,7 +383,8 @@ function getTree(callback){
                 db.find({active: activeStatus},{ projection:{}}).toArray(function(err, res){
                     if(res == null || res == undefined) { response.errorMessage = "Unable get list";}
                     else { response.results = buildTree(res);}
-
+                    
+                    client.close();
                     callback(response);
                 });
             }

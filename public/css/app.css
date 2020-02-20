@@ -660,6 +660,8 @@
 .ministries .split-editor .song-editor {
   width: 60%;
   flex: initial;
+  height: 100%;
+  overflow-y: auto;
 }
 .ministries .split-editor .song-editor .editor-container .input-container {
   width: 100%;
@@ -671,6 +673,86 @@
 }
 .ministries .split-editor .song-editor .editor-container .input-container.check span {
   margin-right: 10px;
+}
+.ministries .leadership-list {
+  margin-top: 10px;
+}
+.ministries .leadership-list .ctrlBtn {
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  border-radius: 50%;
+  background: #006400;
+  color: #ffffff;
+  text-align: center;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  float: right;
+  margin-right: 20px;
+  cursor: pointer;
+  transition: 0.5s all ease-in-out;
+}
+.ministries .leadership-list .ctrlBtn.addBtn {
+  background: #006400;
+}
+.ministries .leadership-list .ctrlBtn.removeBtn {
+  background: #640000;
+}
+.ministries .leadership-list .ctrlBtn:hover {
+  opacity: 0.7;
+}
+.ministries .leadership-list h2 {
+  margin-bottom: 30px;
+}
+.ministries .leadership-list .leadership-item {
+  position: relative;
+  padding: 7px;
+  border: 2px solid #000000;
+  border-radius: 7px;
+  margin: 0px 7px 7px 0px;
+}
+.ministries .leadership-list .leadership-item .list-input-container {
+  display: flex;
+  flex-direction: row;
+}
+.ministries .leadership-list .leadership-item .list-input-container input {
+  margin-left: 7px;
+  flex: 1;
+}
+.ministries .leadership-list .leadership-item .ctrlBtn {
+  position: absolute;
+  top: -15px;
+  right: 10px;
+  margin: 0px;
+}
+.ministries .ctrlCards {
+  position: absolute;
+  display: inline-flex;
+  top: 30px;
+  right: 5%;
+  flex-direction: column;
+}
+.ministries .ctrlCards .ctrlCard {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 7px;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: 0.5s all ease-in-out;
+}
+.ministries .ctrlCards .ctrlCard + .ctrlCard {
+  margin-top: 20px;
+}
+.ministries .ctrlCards .ctrlCard:hover {
+  opacity: 1;
+}
+.ministries .ctrlCards .ctrlCard.saveCard {
+  background: #006400;
 }
 body,
 html {

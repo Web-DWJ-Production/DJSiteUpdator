@@ -9,8 +9,10 @@ var Flickr = require("flickrapi");
 require('dotenv').config();
 var mongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
+var Image = require('../models/image');
 
 var activeStatus = false;
+
 
 var apiUrl = {}
 var FlickrOptions = { 
@@ -98,6 +100,7 @@ var data = {
             *   If so Upload Img and save data
             *   Else Update data
             */
+           var dataItem = JSON.parse(req.body.dataItem);
            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){ 
                 if(err) {
                     response.errorMessage = err;
@@ -105,19 +108,47 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
-                    if(!item._id){ 
-                        const newImage = {
+                    if(!dataItem._id){   
+                        /* Add New */            
+                        const newImage = new Image({
                             imageName: req.body.imageName,
                             imageData: req.file.path
-                        };
+                        });
 
-                        uploadImg(newImage, {}, function(upRet){
-                            response.results = upRet;
-                            res.status(200).json(response);
-                        });                        
+                        uploadImg(newImage, dataItem, function(upRet){
+                            if(upRet.status){
+                                dataItem.media = upRet.new;
+                                console.log("insert: ", dataItem._id);
+                                console.log(dataItem);
+
+                                db.insert(dataItem);
+                                response.results = true;
+                                res.status(200).json(response);
+                            }
+                            else {
+                                res.status(200).json(response);
+                            }
+                        });   
                     }
                     else {
-
+                        /* Update */
+                        if(dataItem.newImg){
+                            uploadImg(newImage, dataItem, function(upRet){
+                                if(upRet.status){
+                                    db.updateOne({ "_id": ObjectId(dataItem._id) },  { $set: {title: dataItem.title, lines: dataItem.lines, order:dataItem.order, media: upRet.new }}, {upsert: true, useNewUrlParser: true});
+                                    response.results = true;
+                                    res.status(200).json(response);
+                                }
+                                else {
+                                    res.status(200).json(response);
+                                }
+                            });   
+                        }
+                        else {
+                            db.updateOne({ "_id": ObjectId(dataItem._id) },  { $set: {title: dataItem.title, lines: dataItem.lines, order:dataItem.order, media: dataItem.media}}, {upsert: true, useNewUrlParser: true});
+                            response.results = true;
+                            res.status(200).json(response);
+                        }                        
                     }
                 }
            });
@@ -347,9 +378,38 @@ function repeatDateBuilder(item, maxDt, addtime, monthFlg){
 
 function uploadImg(newImage, imgData, callback){
     try {
-        newImage.save().then((result) => {
-            console.log(result);
-            callback(true);
+        var ret = {new: null, status: false};
+        var folderId = "72157696977148262";
+        var url = path.join(__dirname, '../../'+newImage.imageData);  
+
+        Flickr.authenticate(FlickrOptions, function(error, flickrAuth) { 
+            var uploadOptions = { photos:[] };
+            uploadOptions.photos.push({title: newImage.imageName, photo: url});
+            Flickr.upload(uploadOptions, FlickrOptions, function(err, result) { 
+                if(err) {
+                    console.log(error);
+                    callback(ret);
+                }
+
+                if(result.length) {
+                    var photo_id = result[0];
+                    flickrAuth.photosets.addPhoto({api_key: flickrAuth.api_key, photoset_id:folderId, photo_id: photo_id}, function(err, res0){
+                        flickrAuth.photos.getInfo({
+                            api_key: FlickrOptions.api_key,
+                            photo_id : photo_id,
+                            secret: FlickrOptions.secret
+                        }, function(err, result1) {
+                            // Return Img Url
+                            ret.status = true;
+                            ret.new = getImgUrl(result1);
+                            
+                            console.log("file: ",url);
+                            fs.unlinkSync(url);
+                            callback(ret);
+                        });
+                    }); 
+                }
+            });
         });
     }
     catch(ex){

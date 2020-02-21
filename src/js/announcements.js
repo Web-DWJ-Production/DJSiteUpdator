@@ -12,7 +12,6 @@ import ImgCard from "./components/imgCard";
 import SocketConnect from './components/socketConnect';
 
 const textSizes = ["paragraph","h1","h2"];
-var localSock = null;
 
 class Announcements extends Component{
     constructor(props) {
@@ -26,8 +25,6 @@ class Announcements extends Component{
             refreshItem:false,
             announcementList:[]
         }
-
-        this.socketDeclaration = this.socketDeclaration.bind(this);
         this.toggleLoaderMsg = this.toggleLoaderMsg.bind(this);
 
         this.changeSelected = this.changeSelected.bind(this);
@@ -46,7 +43,6 @@ class Announcements extends Component{
     render(){  
         return(
             <div className="page-container announcements">
-                <SocketConnect baseUrl={this.props.baseUrl} user={this.props.currentUser} socketDeclaration={this.socketDeclaration}/>
                 
                 {this.state.toggleTimer != 0 &&
                     <div className="loadingBody">
@@ -104,16 +100,20 @@ class Announcements extends Component{
             imageFormObj.append("imageName", "multer-image-" + Date.now());
             imageFormObj.append("imageData", tmpSelected.imageData);
             // Image Data
-            imageFormObj.append("_id", tmpSelected._id);
-            imageFormObj.append("title", tmpSelected.title);
-            imageFormObj.append("lines", tmpSelected.lines);
-            imageFormObj.append("order", tmpSelected.order);
-            imageFormObj.append("type", tmpSelected.type);
+            var dataItem = {_id: tmpSelected._id , title: tmpSelected.title, lines: tmpSelected.lines, order: tmpSelected.order, type: tmpSelected.type};
+            imageFormObj.append("dataItem", JSON.stringify(dataItem));
 
-            //localSock.emit('update announcements', {"list": tmpList});
             axios.post(self.props.baseUrl + "/api/updateAnnouncement", imageFormObj)
-                .then(function(response) {                        
-                    console.log(response);
+                .then(function(response) {      
+                    if(response.results){                  
+                        self.toggleLoaderMsg(25, function(){
+                            alert("Successfully updated announcement list");
+                            self.getAnnouncements();
+                        });  
+                    }
+                    else {
+                        alert("Error updating announcement list: ", response.errorMessage);
+                    }
                 });  
         }
         catch(ex){
@@ -240,27 +240,6 @@ class Announcements extends Component{
         }
         catch(ex){
             console.log("Error updating text: ", ex);
-        }
-    }
-    
-    socketDeclaration(tmpSock){
-        var self = this;
-        try {
-            localSock = tmpSock;
-            localSock.on('update announcements',function(res) {
-                if(res.results){
-                    self.toggleLoaderMsg(25, function(){
-                        alert("Successfully updated announcement list");
-                        self.getAnnouncements();
-                    });                    
-                }
-                else {
-                    alert("Error updating announcement list: ", res.errorMessage);
-                }
-            });
-        }
-        catch(ex){
-            console.log("Error with socket declaration: ", ex);
         }
     }
 

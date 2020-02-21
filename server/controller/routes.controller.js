@@ -82,7 +82,7 @@ function removeUser(req, res){ user.removeUser(req, res); }
 /* Routes */
 router.get('/getAnnouncements', getAnnouncements);
 router.post('/removeAnnouncement', removeAnnouncement);
-router.get('/updateAnnouncement', upload.single('imageData'), function (req, res, next) {
+router.post('/updateAnnouncement', upload.single('imageData'), function (req, res, next) {
     data.updateAnnouncement(req, res, next);
 });
 

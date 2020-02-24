@@ -67,7 +67,7 @@ class Announcements extends Component{
                             <div className="ctrlCard removeCard" onClick={this.removeAnnouncement}><i className="fas fa-folder-minus"></i></div>                            
                         </span>
                         {this.state.announcementList.map((announcement,i) =>                                                   
-                            <ImgCard key={i} isSelected={(i === this.state.selectedId)} item={announcement} handleInputChange={this.handleInputChange} handleTextChange={this.handleTextChange} handleTextStyleChange={this.handleTextStyleChange} addLine={this.addLine} deleteLine={this.deleteLine}></ImgCard>               
+                            <ImgCard key={i} isSelected={(i === this.state.selectedId)} item={announcement} handleInputChange={this.handleInputChange} handleTextChange={this.handleTextChange} handleTextStyleChange={this.handleTextStyleChange} addLine={this.addLine} deleteLine={this.deleteLine} />               
                         )}
                     </div>
 
@@ -104,7 +104,16 @@ class Announcements extends Component{
             imageFormObj.append("imageName", "multer-image-" + Date.now());
             imageFormObj.append("imageData", tmpSelected.imageData);
             // Image Data
-            var dataItem = {_id: tmpSelected._id , title: tmpSelected.title, lines: tmpSelected.lines, order: tmpSelected.order, type: tmpSelected.type};
+            var dataItem = {
+                _id: tmpSelected._id, 
+                title: tmpSelected.title, 
+                lines: tmpSelected.lines, 
+                order: tmpSelected.order, 
+                type: tmpSelected.type,
+                media: tmpSelected.media,
+                mediaId: tmpSelected.mediaId
+            };
+
             imageFormObj.append("dataItem", JSON.stringify(dataItem));
 
             this.setState({loading: true }, ()=> {
@@ -260,7 +269,7 @@ class Announcements extends Component{
                 return response.json();
             })
             .then(function(data) {
-                self.setState({ announcementList: data.results});
+                self.setState({ announcementList: data.results });
             });
         }
         catch(ex){

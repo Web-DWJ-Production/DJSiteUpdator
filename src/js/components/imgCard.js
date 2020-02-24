@@ -5,7 +5,8 @@ class ImgCard extends Component{
         super(props);
 
         this.state = {
-            isSelected:true
+            isSelected:true,
+            originalImg: null
         }
 
         this.textAreaAdjust = this.textAreaAdjust.bind(this);

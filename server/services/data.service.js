@@ -101,14 +101,8 @@ var data = {
         var response = {"errorMessage":null, "results":false};
         // { imageName, title, lines, order, type}
         try {
-            /* 
-            *   Check If Item is new
-            *   If New Upload Img and data
-            *   Else Check if Img is new
-            *   If so Upload Img and save data
-            *   Else Update data
-            */
            var dataItem = JSON.parse(req.body.dataItem);
+           console.log(1);
            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){ 
                 if(err) {
                     response.errorMessage = err;
@@ -116,8 +110,10 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
+                    console.log("new? ", dataItem._id);
+
                     if(!dataItem._id){   
-                        /* Add New */            
+                        /* Add New Img */            
                         const newImage = new Image({
                             imageName: req.body.imageName,
                             imageData: req.file.path
@@ -139,7 +135,15 @@ var data = {
                     }
                     else {
                         /* Update */
-                        if(dataItem.newImg){
+                        console.log("update check: ");
+                        console.log(req.file);
+                        if(req.file){
+                            /* Add New Img */ 
+                            const newImage = new Image({
+                                imageName: req.body.imageName,
+                                imageData: req.file.path
+                            });
+
                             uploadImg(newImage, dataItem, function(upRet){
                                 if(upRet.status){
                                     db.updateOne({ "_id": ObjectId(dataItem._id) },  { $set: {title: dataItem.title, lines: dataItem.lines, order:dataItem.order, media: upRet.new, mediaId: upRet.newId }}, {upsert: true, useNewUrlParser: true});
@@ -348,7 +352,7 @@ function uploadImg(newImage, imgData, callback){
     try {
         var ret = {new: null, status: false};
         var url = path.join(__dirname, '../../'+newImage.imageData);  
-
+        
         Flickr.authenticate(FlickrOptions, function(error, flickrAuth) { 
             var uploadOptions = { photos:[] };
             uploadOptions.photos.push({title: newImage.imageName, photo: url});

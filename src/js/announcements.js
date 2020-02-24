@@ -23,6 +23,7 @@ class Announcements extends Component{
             selectedItem:{},
             toggleTimer:0,
             refreshItem:false,
+            loading: false,
             announcementList:[]
         }
         this.toggleLoaderMsg = this.toggleLoaderMsg.bind(this);
@@ -43,7 +44,10 @@ class Announcements extends Component{
     render(){  
         return(
             <div className="page-container announcements">
-                
+                {(this.state.loading && 
+                    <div className="loader-container"><div className="hm-spinner" /></div>
+                )}
+
                 {this.state.toggleTimer != 0 &&
                     <div className="loadingBody">
                         <div className="loadingMsg">
@@ -103,18 +107,22 @@ class Announcements extends Component{
             var dataItem = {_id: tmpSelected._id , title: tmpSelected.title, lines: tmpSelected.lines, order: tmpSelected.order, type: tmpSelected.type};
             imageFormObj.append("dataItem", JSON.stringify(dataItem));
 
-            axios.post(self.props.baseUrl + "/api/updateAnnouncement", imageFormObj)
-                .then(function(response) {      
-                    if(response.results){                  
-                        self.toggleLoaderMsg(25, function(){
-                            alert("Successfully updated announcement list");
-                            self.getAnnouncements();
-                        });  
-                    }
-                    else {
-                        alert("Error updating announcement list: ", response.errorMessage);
-                    }
+            this.setState({loading: true }, ()=> {
+                axios.post(self.props.baseUrl + "/api/updateAnnouncement", imageFormObj)
+                .then(function(response) {
+                    self.setState({loading: false },() => {
+                        if(response.data.results){                  
+                            self.toggleLoaderMsg(25, function(){
+                                alert("Successfully updated announcement list");
+                                self.getAnnouncements();
+                            });  
+                        }
+                        else {
+                            alert("Error updating announcement list: ", response.data.errorMessage);
+                        }
+                    });      
                 });  
+            });            
         }
         catch(ex){
             console.log(" Error saving announcements: ", ex);

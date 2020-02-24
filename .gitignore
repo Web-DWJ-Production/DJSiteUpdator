@@ -1,4 +1,6 @@
 /node_modules
 /build
 /server/config
+/uploads/*
 .env
+!/uploads/init.txt

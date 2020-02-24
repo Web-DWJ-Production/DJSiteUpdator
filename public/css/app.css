@@ -1129,3 +1129,49 @@ html {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+/* Loader */
+.loader-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+  z-index: 1000;
+}
+.loader-container .hm-spinner {
+  height: 315px;
+  width: 315px;
+  border: 5px solid transparent;
+  border-top-color: #cd853f;
+  border-bottom-color: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 35%;
+  left: 35%;
+  transform: translate(-35%, -35%);
+  -webkit-animation: spin 3s linear infinite;
+  animation: spin 3s linear infinite;
+}
+.loader-container .hm-spinner:before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  border: 5px solid transparent;
+  border-top-color: #cd853f;
+  border-bottom-color: #ffffff;
+  border-radius: 50%;
+  -webkit-animation: spin 1.5s linear infinite;
+  animation: spin 1.5s linear infinite;
+}
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

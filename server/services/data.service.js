@@ -101,8 +101,7 @@ var data = {
         var response = {"errorMessage":null, "results":false};
         // { imageName, title, lines, order, type}
         try {
-           var dataItem = JSON.parse(req.body.dataItem);
-           console.log(1);
+           var dataItem = JSON.parse(req.body.dataItem);           
            mongoClient.connect(database.remoteUrl, database.mongoOptions, function(err, client){ 
                 if(err) {
                     response.errorMessage = err;
@@ -110,8 +109,7 @@ var data = {
                 }
                 else {
                     const db = client.db(database.dbName).collection('announcements');
-                    console.log("new? ", dataItem._id);
-
+                    
                     if(!dataItem._id){   
                         /* Add New Img */            
                         const newImage = new Image({
@@ -135,8 +133,6 @@ var data = {
                     }
                     else {
                         /* Update */
-                        console.log("update check: ");
-                        console.log(req.file);
                         if(req.file){
                             /* Add New Img */ 
                             const newImage = new Image({

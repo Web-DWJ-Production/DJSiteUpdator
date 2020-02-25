@@ -26,11 +26,6 @@ app.use((req, res, next) => {
 // Set our api routes
 app.use('/api', require('./server/controller/routes.controller.js'));
 
-// SOCKET CONNECTION
-require('./server/controller/netsock.controller.js')(io);
-
-
-
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build','index.html'));

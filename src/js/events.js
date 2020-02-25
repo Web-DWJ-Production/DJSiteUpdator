@@ -9,11 +9,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import defaultImg from '../assets/imgs/DefaultImg.PNG';
 import defaultImgAlt from '../assets/imgs/DefaultImgW.PNG';
 
-/* Components */
-import SocketConnect from './components/socketConnect';
-
-var localSock = null;
-
 class Events extends Component{
     constructor(props) {
         super(props);
@@ -193,7 +188,7 @@ class Events extends Component{
                 }   
                 else {
                     this.setState({loader: true}, () => {
-                        localSock.emit('update event', {"event": this.state.selectedItem});
+                        /* Update Event */
                     });                    
                 }    
             }
@@ -225,8 +220,6 @@ class Events extends Component{
     render(){  
         return(
             <div className="page-container songs">
-                <SocketConnect baseUrl={this.props.baseUrl} user={this.props.currentUser} socketDeclaration={this.socketDeclaration}/>
-
                 <h1>Events</h1>
                 <div className="split-editor">
                     <div className="song-selector split">                    
@@ -301,28 +294,6 @@ class Events extends Component{
                 </div>
             </div>
         );
-    }
-    
-    socketDeclaration(tmpSock){
-        var self = this;
-        try {
-            tmpSock.on('update event',function(res) {
-                self.setState({loader: true}, () => {
-                    if(res.results){
-                        alert("Successfully updated event");
-                        self.changeSelected(null);
-                        self.getEvents();
-                    }
-                    else {
-                        alert("Error updating event: ", res.errorMessage);
-                    }
-                });                
-            });
-            localSock = tmpSock;
-        }
-        catch(ex){
-            console.log("Error with socket declaration: ", ex);
-        }
     }
     
     getEvents(){

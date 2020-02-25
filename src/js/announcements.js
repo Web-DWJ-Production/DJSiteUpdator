@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
 /* Image */
@@ -8,8 +7,6 @@ import defaultImg from "../assets/imgs/amez_logo.png";
 
 /* Cards */
 import ImgCard from "./components/imgCard";
-/* Components */
-import SocketConnect from './components/socketConnect';
 
 const textSizes = ["paragraph","h1","h2"];
 
@@ -110,8 +107,8 @@ class Announcements extends Component{
                 lines: tmpSelected.lines, 
                 order: tmpSelected.order, 
                 type: tmpSelected.type,
-                media: tmpSelected.media,
-                mediaId: tmpSelected.mediaId
+                media: (tmpSelected.media != undefined && tmpSelected.media.indexOf("data:image/") < 0 ? tmpSelected.media : null),
+                mediaId: (tmpSelected.mediaId != undefined ? tmpSelected.mediaId : null)
             };
 
             imageFormObj.append("dataItem", JSON.stringify(dataItem));
@@ -130,6 +127,10 @@ class Announcements extends Component{
                             alert("Error updating announcement list: ", response.data.errorMessage);
                         }
                     });      
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
                 });  
             });            
         }

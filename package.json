@@ -19,7 +19,7 @@
   "author": "Kris Redding",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "base64-img": "^1.0.4",
     "bcrypt": "^3.0.4",
     "flickrapi": "^0.6.0",
